@@ -2,24 +2,49 @@ import van from "vanjs-core"
 
 const { div, label, input, select, option, small, button, h3, span, textarea, form } = van.tags
 
-export default function EventModal({ title, onClose, onSave }) {
+let modalIsShowing = false
+
+
+export default function EventModal({ title, onClose, onSave, data }) {
+    if (modalIsShowing) {
+        return null
+    }
+    modalIsShowing = true
+
+    const startingData = data || {}
+
+    console.log("startingData", startingData)
+
     const modalForm = form({ class: "modal" })
+
+    const remove = () => {
+        modalForm.remove()
+        onClose()
+        modalIsShowing = false
+    }
 
 
     modalForm.addEventListener("submit", (e) => {
-        console.log("modalForm submitted")
         e.preventDefault()
-        onSave()
-        modalForm.remove()
+        const formData = new FormData(modalForm)
+
+        const data = {}
+        for (const [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+            data[key] = value
+        }
+        onSave(data)
+        remove()
     })
 
-    return modalForm.appendChild(
+    // remove this
+    modalForm.style.display = 'block'
+
+    modalForm.replaceChildren(
         div({ class: "modal-content" },
             div({ class: "modal-header" },
-                h3(
-                    title,
-                ),
-                span({ class: "close", onclick: ()=> modalForm.remove() && onClose() },
+                h3(title),
+                span({ class: "close", onclick: () => remove() },
                     "×",
                 ),
             ),
@@ -28,7 +53,7 @@ export default function EventModal({ title, onClose, onSave }) {
                     label({ for: "eventType" },
                         "Event Type:",
                     ),
-                    select({ id: "eventType", name: "eventType", class: "form-input" },
+                    select({ id: "eventType", name: "eventType", class: "form-input", value: startingData.eventType || "birth" },
                         option({ value: "birth" },
                             "Birth",
                         ),
@@ -96,13 +121,19 @@ export default function EventModal({ title, onClose, onSave }) {
                 ),
             ),
             div({ class: "modal-footer" },
-                button({ type: "button", class: "btn btn-secondary", onclick: ()=> modalForm.remove() && onClose() },
+                button({ type: "button", class: "btn btn-secondary", onclick: () => remove() },
                     "Cancel",
                 ),
-                button({class: "btn btn-primary", onclick: ()=> modalForm.remove() && onSave() },
+                button({ type: "submit", class: "btn btn-primary", },
                     "Save",
                 ),
             ),
         )
     )
+
+    for (const [key, value] of Object.entries(startingData)) {
+        modalForm.querySelector(`*[name="${key}"]`).value = value
+    }
+
+    return modalForm
 }

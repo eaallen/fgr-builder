@@ -12,7 +12,16 @@ import { initializeForm } from './js/form/formManager.js';
 import { saveRecord } from './js/form/formManager.js';
 import { exportRecord } from './js/utils/export.js';
 import { addChild, addSpouse, deleteSpouse, deleteChild } from './js/form/childrenManager.js';
-import { addEvent, editEvent, saveEvent, deleteEvent, closeEventModal, toggleSources } from './js/form/eventManager.js';
+import { addEvent, editEvent, deleteEvent, closeEventModal, toggleSources } from './js/form/eventManager.js';
+
+// Import VanJS EventList component (example usage)
+// import EventList from './js/components/EventList.js';
+// import van from 'vanjs-core';
+// 
+// Example usage of EventList component:
+// const { div } = van.tags;
+// const eventListComponent = EventList({ containerId: "my-events" });
+// document.getElementById('some-container').appendChild(eventListComponent);
 
 // Firebase configuration
 const firebaseConfig = {
@@ -62,7 +71,6 @@ window.deleteChild = deleteChild;
 
 window.addEvent = addEvent;
 window.editEvent = editEvent;
-window.saveEvent = saveEvent;
 window.deleteEvent = deleteEvent;
 window.closeEventModal = closeEventModal;
 window.toggleSources = toggleSources;

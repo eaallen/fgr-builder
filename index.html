@@ -143,61 +143,7 @@
             </div>
         </form>
     </div>
-
-    <!-- Event Modal -->
-    <div id="eventModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Add Event</h3>
-                <span class="close" onclick="closeEventModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="eventType">Event Type:</label>
-                    <select id="eventType" name="eventType" class="form-input">
-                        <option value="birth">Birth</option>
-                        <option value="baptism">Baptism</option>
-                        <option value="christening">Christening</option>
-                        <option value="marriage">Marriage</option>
-                        <option value="divorce">Divorce</option>
-                        <option value="death">Death</option>
-                        <option value="burial">Burial</option>
-                        <option value="census">Census</option>
-                        <option value="residence">Residence</option>
-                        <option value="occupation">Occupation</option>
-                        <option value="military">Military</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="eventDate">Date:</label>
-                    <input type="date" id="eventDate" name="eventDate" class="form-input">
-                </div>
-                <div class="form-group">
-                    <label for="eventDescription">Description:</label>
-                    <input type="text" id="eventDescription" name="eventDescription" placeholder="Additional details"
-                        class="form-input">
-                </div>
-                <div class="form-group">
-                    <label for="eventPlace">Place:</label>
-                    <input type="text" id="eventPlace" name="eventPlace" placeholder="Location" class="form-input">
-                </div>
-                <div class="form-group">
-                    <label for="eventSources">Sources:</label>
-                    <textarea id="eventSources" name="eventSources"
-                        placeholder="Source citations or references. Include URLs for web sources - they will automatically become clickable links."
-                        class="form-input"></textarea>
-                    <small class="form-help">Tip: Paste URLs directly into this field. They will automatically become
-                        clickable links when saved.</small>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeEventModal()">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="saveEvent(this)">Save</button>
-            </div>
-        </div>
-    </div>
-
+    
     <!-- Main Application -->
     <script type="module" src="/main.js"></script>
 </body>
