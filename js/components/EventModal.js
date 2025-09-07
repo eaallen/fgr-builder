@@ -1,0 +1,108 @@
+import van from "vanjs-core"
+
+const { div, label, input, select, option, small, button, h3, span, textarea, form } = van.tags
+
+export default function EventModal({ title, onClose, onSave }) {
+    const modalForm = form({ class: "modal" })
+
+
+    modalForm.addEventListener("submit", (e) => {
+        console.log("modalForm submitted")
+        e.preventDefault()
+        onSave()
+        modalForm.remove()
+    })
+
+    return modalForm.appendChild(
+        div({ class: "modal-content" },
+            div({ class: "modal-header" },
+                h3(
+                    title,
+                ),
+                span({ class: "close", onclick: ()=> modalForm.remove() && onClose() },
+                    "×",
+                ),
+            ),
+            div({ class: "modal-body" },
+                div({ class: "form-group" },
+                    label({ for: "eventType" },
+                        "Event Type:",
+                    ),
+                    select({ id: "eventType", name: "eventType", class: "form-input" },
+                        option({ value: "birth" },
+                            "Birth",
+                        ),
+                        option({ value: "baptism" },
+                            "Baptism",
+                        ),
+                        option({ value: "christening" },
+                            "Christening",
+                        ),
+                        option({ value: "marriage" },
+                            "Marriage",
+                        ),
+                        option({ value: "divorce" },
+                            "Divorce",
+                        ),
+                        option({ value: "death" },
+                            "Death",
+                        ),
+                        option({ value: "burial" },
+                            "Burial",
+                        ),
+                        option({ value: "census" },
+                            "Census",
+                        ),
+                        option({ value: "residence" },
+                            "Residence",
+                        ),
+                        option({ value: "occupation" },
+                            "Occupation",
+                        ),
+                        option({ value: "military" },
+                            "Military",
+                        ),
+                        option({ value: "other" },
+                            "Other",
+                        ),
+                    ),
+                ),
+                div({ class: "form-group" },
+                    label({ for: "eventDate" },
+                        "Date:",
+                    ),
+                    input({ type: "date", id: "eventDate", name: "eventDate", class: "form-input" }),
+                ),
+                div({ class: "form-group" },
+                    label({ for: "eventDescription" },
+                        "Description:",
+                    ),
+                    input({ type: "text", id: "eventDescription", name: "eventDescription", placeholder: "Additional details", class: "form-input" }),
+                ),
+                div({ class: "form-group" },
+                    label({ for: "eventPlace" },
+                        "Place:",
+                    ),
+                    input({ type: "text", id: "eventPlace", name: "eventPlace", placeholder: "Location", class: "form-input" }),
+                ),
+                div({ class: "form-group" },
+                    label({ for: "eventSources" },
+                        "Sources:",
+                    ),
+                    textarea({ id: "eventSources", name: "eventSources", placeholder: "Source citations or references. Include URLs for web sources - they will automatically become clickable links.", class: "form-input" }),
+                    small({ class: "form-help" },
+                        "Tip: Paste URLs directly into this field. They will automatically become\n                        clickable links when saved.",
+                    ),
+                ),
+            ),
+            div({ class: "modal-footer" },
+                button({ type: "button", class: "btn btn-secondary", onclick: ()=> modalForm.remove() && onClose() },
+                    "Cancel",
+                ),
+                button({class: "btn btn-primary", onclick: ()=> modalForm.remove() && onSave() },
+                    "Save",
+                ),
+            ),
+        )
+    )
+}

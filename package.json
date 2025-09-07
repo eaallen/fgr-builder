@@ -1,0 +1,27 @@
+{
+  "name": "genealogy-record-builder",
+  "version": "1.0.0",
+  "description": "A web application for building family group records with Firebase integration",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "firebase": "^10.7.1",
+    "vanjs-core": "^1.5.5"
+  },
+  "devDependencies": {
+    "vite": "^5.0.8"
+  },
+  "keywords": [
+    "genealogy",
+    "family-records",
+    "firebase",
+    "vite"
+  ],
+  "author": "",
+  "license": "MIT"
+}
