@@ -12,7 +12,7 @@ import { initializeForm } from './js/form/formManager.js';
 import { saveRecord } from './js/form/formManager.js';
 import { exportRecord } from './js/utils/export.js';
 import { addChild, addSpouse, deleteSpouse, deleteChild } from './js/form/childrenManager.js';
-import { addEvent, editEvent, deleteEvent, closeEventModal, toggleSources } from './js/form/eventManager.js';
+import {  closeEventModal } from './js/form/eventManager.js';
 
 // Import VanJS components (example usage)
 // import EventList from './js/components/EventList.js';
@@ -76,11 +76,6 @@ window.addSpouse = addSpouse;
 window.deleteSpouse = deleteSpouse;
 window.deleteChild = deleteChild;
 
-window.addEvent = addEvent;
-window.editEvent = editEvent;
-window.deleteEvent = deleteEvent;
-window.closeEventModal = closeEventModal;
-window.toggleSources = toggleSources;
 
 // ==================== MAIN APPLICATION INITIALIZATION ====================
 

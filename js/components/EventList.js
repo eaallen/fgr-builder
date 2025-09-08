@@ -1,6 +1,6 @@
 import van from "vanjs-core"
 import EventModal from './EventModal.js'
-import { formatDateToISO } from '../utils/date.js'
+import { formatDateForDisplay, formatDateToISO } from '../utils/date.js'
 
 const { div, button, h3, p } = van.tags
 
@@ -69,29 +69,6 @@ export default function EventList(eventState) {
         }
     }
 
-    // Format date for display
-    const formatDate = (dateString) => {
-        if (!dateString) return ''
-        const date = new Date(dateString)
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            timeZone: 'UTC'
-        })
-    }
-
-    // Format sources with clickable links
-    const formatSourcesWithLinks = (sources) => {
-        if (!sources) return ''
-        const urlRegex = /(https?:\/\/[^\s]+)/g
-        return sources.replace(urlRegex, (url) => {
-            const cleanUrl = url.replace(/[.,;:!?]+$/, '')
-            const displayUrl = cleanUrl.length > 50 ? cleanUrl.substring(0, 50) + '...' : cleanUrl
-            return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="source-link">${displayUrl}</a>`
-        })
-    }
-
     // Toggle sources expansion
     const toggleSources = (sourcesId) => {
         const sourcesElement = document.getElementById(sourcesId)
@@ -113,8 +90,8 @@ export default function EventList(eventState) {
     // Create event item element
     const createEventItem = (event) => {
         const eventType = event.type.charAt(0).toUpperCase() + event.type.slice(1)
-        const formattedDate = formatDate(event.date)
-        const formattedSources = formatSourcesWithLinks(event.sources || '')
+        const formattedDate = formatDateForDisplay(event.date)
+        const formattedSources = (event.sources || '')
         const hasSources = event.sources && event.sources.trim()
         const sourcesId = `sources-${event.id}`
 

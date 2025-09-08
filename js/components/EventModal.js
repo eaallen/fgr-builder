@@ -1,4 +1,5 @@
 import van from "vanjs-core"
+import RichTextEditor from './RichTextEditor.js'
 
 const { div, label, input, select, option, small, button, h3, span, textarea, form } = van.tags
 
@@ -31,6 +32,9 @@ export default function EventModal({ title = "Event Modal", onClose = ()=>{}, on
             console.log(`${key}: ${value}`);
             data[key] = value
         }
+
+
+        console.log("data------>", data)
         onSave(data)
         remove()
     })
@@ -112,9 +116,30 @@ export default function EventModal({ title = "Event Modal", onClose = ()=>{}, on
                     label({ for: "eventSources" },
                         "Sources:",
                     ),
-                    textarea({ id: "eventSources", name: "eventSources", placeholder: "Source citations or references. Include URLs for web sources - they will automatically become clickable links.", class: "form-input" }),
+                    RichTextEditor({
+                        id: "eventSources",
+                        name: "eventSources",
+                        placeholder: "Source citations or references. Use the toolbar to format text and add links.",
+                        class: "form-input",
+                        value: data.eventSources || "",
+                        onchange: (content) => {
+                            // Store the content for form submission
+                            console.log("content------>", content)
+                            const hiddenInput = document.getElementById('eventSourcesHidden')
+                            if (hiddenInput) {
+                                hiddenInput.value = content
+                            }
+                        }
+                    }),
+                    // Hidden input to store the rich text content for form submission
+                    input({ 
+                        type: "hidden", 
+                        id: "eventSourcesHidden", 
+                        name: "eventSources",
+                        value: data.eventSources || ""
+                    }),
                     small({ class: "form-help" },
-                        "Tip: Paste URLs directly into this field. They will automatically become\n                        clickable links when saved.",
+                        "Use the toolbar to format text, add links, and paste content with embedded links.",
                     ),
                 ),
             ),
@@ -130,7 +155,19 @@ export default function EventModal({ title = "Event Modal", onClose = ()=>{}, on
     )
 
     for (const [key, value] of Object.entries(data)) {
-        modalForm.querySelector(`*[name="${key}"]`).value = value
+        const element = modalForm.querySelector(`*[name="${key}"]`)
+        if (element) {
+            if (key === 'eventSources') {
+                // Handle rich text editor content
+                const hiddenInput = modalForm.querySelector('#eventSourcesHidden')
+                if (hiddenInput) {
+                    hiddenInput.value = value
+                }
+                // The rich text editor will be initialized with the value from the props
+            } else {
+                element.value = value
+            }
+        }
     }
 
     return modalForm

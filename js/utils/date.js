@@ -35,3 +35,14 @@ export function convertToISODate(dateString) {
 export function formatDateToISO(dateString) {
     return convertToISODate(dateString);
 }
+
+
+export function formatDateForDisplay(dateString) {
+    if (!dateString) return ''
+    const date = new Date(dateString)
+    const day = date.getDate()
+    const month = date.toLocaleDateString('en-US', { month: 'long', timeZone: 'UTC' })
+    const year = date.getFullYear()
+    
+    return `${day} ${month} ${year}`
+}
