@@ -3,25 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event List Component Example</title>
+    <title>Family Record Components Example</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
             background-color: #f5f5f5;
         }
         
-        .event-list-container {
+        .family-record {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .person-section {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
         }
         
-        .event-list-header {
+        .person-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -30,7 +36,7 @@
             padding-bottom: 10px;
         }
         
-        .event-list-header h3 {
+        .person-header h2 {
             margin: 0;
             color: #333;
         }
@@ -77,14 +83,42 @@
             background-color: #c82333;
         }
         
-        .event-item {
+        .add-event-btn, .add-child-btn {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .add-event-btn:hover, .add-child-btn:hover {
+            background-color: #138496;
+        }
+        
+        /* Event List Styles */
+        .event-list-container, .child-list-container {
+            margin-top: 20px;
+        }
+        
+        .event-list-header, .child-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .event-list-header h3, .child-list-header h3 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .event-item, .child-item {
             border: 1px solid #ddd;
             border-radius: 4px;
             margin-bottom: 10px;
             background: #fafafa;
         }
         
-        .event-header {
+        .event-header, .child-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -98,7 +132,7 @@
             color: #495057;
         }
         
-        .event-actions {
+        .event-actions, .child-actions {
             display: flex;
         }
         
@@ -160,7 +194,59 @@
             text-decoration: underline;
         }
         
-        .no-events {
+        /* Child List Styles */
+        .spouses-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-top: 1px solid #ddd;
+        }
+        
+        .spouses-section h5 {
+            margin: 0 0 10px 0;
+            color: #495057;
+        }
+        
+        .spouses-list {
+            margin-bottom: 10px;
+        }
+        
+        .spouse-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .spouse-input, .child-name-input {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .spouse-input:focus, .child-name-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        
+        .add-spouse-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .add-spouse-btn:hover {
+            background-color: #545b62;
+        }
+        
+        .no-events, .no-children {
             text-align: center;
             color: #6c757d;
             font-style: italic;
@@ -262,35 +348,92 @@
             color: #6c757d;
             margin-top: 5px;
         }
+        
+        .data-display {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        
+        .data-display h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
-    <h1>Event List Component Example</h1>
-    <p>This example demonstrates the VanJS EventList component with state management for adding, editing, and deleting events.</p>
+    <h1>Family Record Components Example</h1>
+    <p>This example demonstrates both EventList and ChildList VanJS components working together to manage family records.</p>
     
-    <div id="app"></div>
+    <div class="family-record">
+        <div class="person-section">
+            <div class="person-header">
+                <h2>Father</h2>
+            </div>
+            <div id="father-events"></div>
+        </div>
+        
+        <div class="person-section">
+            <div class="person-header">
+                <h2>Mother</h2>
+            </div>
+            <div id="mother-events"></div>
+        </div>
+    </div>
+    
+    <div class="person-section">
+        <div class="person-header">
+            <h2>Children</h2>
+        </div>
+        <div id="children-section"></div>
+    </div>
+    
+    <div class="data-display">
+        <h3>Current Data (for debugging)</h3>
+        <div id="data-display"></div>
+    </div>
     
     <script type="module">
         import EventList from './js/components/EventList.js'
+        import ChildList from './js/components/ChildList.js'
         import van from 'vanjs-core'
         
-        const { div, h2, p, h3 } = van.tags
-
+        const { div, h2, h3, pre } = van.tags
+        
+        // Create state for all components
         const fatherEvents = van.state([])
         const motherEvents = van.state([])
+        const children = van.state([])
         
-        // Create the app
-        const app = div(
-            h2("Genealogy Event Manager"),
-            p("Use the Event List component below to manage events:"),
-            h3("Father Events"),
-            EventList(fatherEvents),
-            h3("Mother Events"),
-            EventList(motherEvents),
+        // Create components
+        const fatherEventList = EventList(fatherEvents)
+        const motherEventList = EventList(motherEvents)
+        const childList = ChildList(children)
+        
+        // Data display component
+        const dataDisplay = van.derive(() => 
+            pre(JSON.stringify({
+                fatherEvents: fatherEvents.val,
+                motherEvents: motherEvents.val,
+                children: children.val
+            }, null, 2))
         )
         
-        // Mount the app
-        document.getElementById('app').replaceWith(app)
+        // Mount components
+        document.getElementById('father-events').replaceWith(fatherEventList)
+        document.getElementById('mother-events').replaceWith(motherEventList)
+        document.getElementById('children-section').replaceWith(childList)
+        document.getElementById('data-display').replaceWith(() => dataDisplay.val)
     </script>
 </body>
 </html>

@@ -7,6 +7,11 @@
     <title>Family Group Record Builder</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // setup global variables
+        window.autoSaveTimeout = null;
+
+    </script>
 </head>
 
 <body>
@@ -71,12 +76,9 @@
                         </div>
                     </div>
                     <div class="events-section">
-                        <h4>Events</h4>
                         <div id="fatherEvents" class="events-list">
                             <!-- Events will be added dynamically -->
                         </div>
-                        <button type="button" class="add-event-btn" onclick="addEvent('fatherEvents')">+ Add
-                            Event</button>
                     </div>
                 </div>
             </section>
@@ -96,12 +98,9 @@
                         </div>
                     </div>
                     <div class="events-section">
-                        <h4>Events</h4>
                         <div id="motherEvents" class="events-list">
                             <!-- Events will be added dynamically -->
                         </div>
-                        <button type="button" class="add-event-btn" onclick="addEvent('motherEvents')">+ Add
-                            Event</button>
                     </div>
                 </div>
             </section>
@@ -143,7 +142,7 @@
             </div>
         </form>
     </div>
-    
+
     <!-- Main Application -->
     <script type="module" src="/main.js"></script>
 </body>

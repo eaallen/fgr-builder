@@ -1,12 +1,21 @@
 // ==================== FORM MANAGEMENT ====================
 
-import { generateChildId, generateSpouseId } from '../utils/uuid.js';
-import { groupBy } from '../utils/array.js';
+import { generateChildId } from '../utils/uuid.js';
 import { validateField, clearFieldError } from '../utils/validation.js';
 import { saveToFirestore } from '../firestore/firestore.js';
+import van from 'vanjs-core';
+import EventList from '../components/EventList.js';
+import { debounceAutoSave } from '../firestore/firestore.js';
 
-let currentEventContainer = null;
-let currentEventIndex = null;
+const fatherEvents = van.state([])
+const motherEvents = van.state([])
+
+van.derive(() =>{ 
+    console.log("debouncing auto save via van state")
+    const formData = collectFormData()
+    console.log("formData", formData)
+    debounceAutoSave()
+})
 
 // Initialize form functionality
 export function initializeForm() {
@@ -16,6 +25,10 @@ export function initializeForm() {
         input.addEventListener('blur', validateField);
         input.addEventListener('input', clearFieldError);
     });
+
+    // add events list
+    van.add(document.getElementById('fatherEvents'), EventList(fatherEvents))
+    van.add(document.getElementById('motherEvents'), EventList(motherEvents))
 }
 
 // Collect form data using FormData
@@ -34,14 +47,14 @@ export function collectFormData() {
         name: data.fatherFullName || '',
         father: data.fatherFather || '',
         mother: data.fatherMother || '',
-        events: collectEvents('fatherEvents')
+        events: fatherEvents.val
     };
     
     data.mother = {
         name: data.motherFullName || '',
         father: data.motherFather || '',
         mother: data.motherMother || '',
-        events: collectEvents('motherEvents')
+        events: motherEvents.val
     };
     
     data.children = collectChildren();
@@ -170,6 +183,9 @@ export async function saveRecord() {
 // Populate form with data
 export function populateForm(data) {
     if (!data) return;
+
+    if(data.fatherName) document.getElementById('fatherName').value = data.fatherName
+    if(data.motherName) document.getElementById('motherName').value = data.motherName
     
     // Populate basic fields
     if (data.recordDate) document.getElementById('recordDate').value = data.recordDate;
@@ -177,13 +193,15 @@ export function populateForm(data) {
         if (data.father.name) document.getElementById('fatherFullName').value = data.father.name;
         if (data.father.father) document.getElementById('fatherFather').value = data.father.father;
         if (data.father.mother) document.getElementById('fatherMother').value = data.father.mother;
-        if (data.father.events) populateEvents('fatherEvents', data.father.events);
+        if (data.father.events) {
+            fatherEvents.val = data.father.events
+        }
     }
     if (data.mother) {
         if (data.mother.name) document.getElementById('motherFullName').value = data.mother.name;
         if (data.mother.father) document.getElementById('motherFather').value = data.mother.father;
         if (data.mother.mother) document.getElementById('motherMother').value = data.mother.mother;
-        if (data.mother.events) populateEvents('motherEvents', data.mother.events);
+        if (data.mother.events) motherEvents.val = data.mother.events
     }
     if (data.children) populateChildren(data.children);
     if (data.preparer) {
@@ -243,18 +261,6 @@ function collectChildren() {
     return children;
 }
 
-// Populate events
-function populateEvents(containerId, events) {
-    console.log(containerId, "events", events);
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-    
-    events.forEach(eventData => {
-        const eventElement = createEventElement(eventData);
-        container.appendChild(eventElement);
-    });
-}
-
 // Populate children
 function populateChildren(children) {
     const childrenList = document.getElementById('childrenList');
@@ -288,75 +294,3 @@ function populateChildren(children) {
         childrenList.appendChild(childDiv);
     });
 }
-
-// Create event element
-function createEventElement(eventData) {
-    const eventDiv = document.createElement('div');
-    eventDiv.className = 'event-item';
-    
-    const formattedDate = formatDate(eventData.date);
-    const eventType = eventData.type.charAt(0).toUpperCase() + eventData.type.slice(1);
-    const formattedSources = formatSourcesWithLinks(eventData.sources || '');
-    const hasSources = eventData.sources && eventData.sources.trim();
-    const sourcesId = 'sources-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-    
-    eventDiv.innerHTML = `
-        <div class="event-header">
-            <div class="event-type">${eventType}</div>
-            <div class="event-actions">
-                <button type="button" class="btn-small btn-edit" onclick="editEvent(this)">Edit</button>
-                <button type="button" class="btn-small btn-delete" onclick="deleteEvent(this)">Delete</button>
-            </div>
-        </div>
-        <div class="event-content">
-            <div class="event-date">${formattedDate}</div>
-            ${eventData.description ? `<div class="event-description">${eventData.description}</div>` : ''}
-            ${eventData.place ? `<div class="event-place">${eventData.place}</div>` : ''}
-            ${hasSources ? `
-                <div class="sources-container">
-                    <div class="event-sources collapsed" id="${sourcesId}">
-                        ${formattedSources}
-                    </div>
-                    <button type="button" class="sources-toggle" onclick="toggleSources('${sourcesId}')">Show more</button>
-                </div>
-            ` : ''}
-        </div>
-    `;
-    
-    return eventDiv;
-}
-
-// Date formatting
-function formatDate(dateString) {
-    if (!dateString) return '';
-    
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-}
-
-// Format sources with clickable links
-function formatSourcesWithLinks(sources) {
-    if (!sources) return '';
-    
-    // URL regex pattern to match various URL formats
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    
-    return sources.replace(urlRegex, (url) => {
-        // Clean up the URL (remove trailing punctuation)
-        const cleanUrl = url.replace(/[.,;:!?]+$/, '');
-        const displayUrl = cleanUrl.length > 50 ? cleanUrl.substring(0, 50) + '...' : cleanUrl;
-        
-        return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="source-link">${displayUrl}</a>`;
-    });
-}
-
-// Export functions that need to be available globally
-window.collectFormData = collectFormData;
-window.validateForm = validateForm;
-window.clearForm = clearForm;
-window.saveRecord = saveRecord;
-window.populateForm = populateForm;

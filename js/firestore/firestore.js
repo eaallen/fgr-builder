@@ -5,7 +5,6 @@ import { db } from '../../main.js';
 import { getCurrentUser } from '../auth/auth.js';
 import { collectFormData, populateForm } from '../form/formManager.js';
 
-let autoSaveTimeout = null;
 let isAutoSaving = false;
 
 // Save data to Firestore
@@ -138,12 +137,12 @@ export function setupAutoSave() {
 }
 
 // Debounced auto-save
-function debounceAutoSave() {
+export function debounceAutoSave() {
     if (autoSaveTimeout) {
         clearTimeout(autoSaveTimeout);
     }
     
-    autoSaveTimeout = setTimeout(autoSave, 2000); // Auto-save after 2 seconds of inactivity
+    autoSaveTimeout = setTimeout(autoSave, 1000);
 }
 
 // Auto-save function

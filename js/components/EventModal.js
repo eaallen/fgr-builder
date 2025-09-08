@@ -5,15 +5,13 @@ const { div, label, input, select, option, small, button, h3, span, textarea, fo
 let modalIsShowing = false
 
 
-export default function EventModal({ title, onClose, onSave, data }) {
+export default function EventModal({ title = "Event Modal", onClose = ()=>{}, onSave, data = {} }) {
     if (modalIsShowing) {
         return null
     }
     modalIsShowing = true
 
-    const startingData = data || {}
-
-    console.log("startingData", startingData)
+    console.log("startingData", data)
 
     const modalForm = form({ class: "modal" })
 
@@ -53,7 +51,7 @@ export default function EventModal({ title, onClose, onSave, data }) {
                     label({ for: "eventType" },
                         "Event Type:",
                     ),
-                    select({ id: "eventType", name: "eventType", class: "form-input", value: startingData.eventType || "birth" },
+                    select({ id: "eventType", name: "eventType", class: "form-input", value: data.eventType || "birth" },
                         option({ value: "birth" },
                             "Birth",
                         ),
@@ -131,7 +129,7 @@ export default function EventModal({ title, onClose, onSave, data }) {
         )
     )
 
-    for (const [key, value] of Object.entries(startingData)) {
+    for (const [key, value] of Object.entries(data)) {
         modalForm.querySelector(`*[name="${key}"]`).value = value
     }
 

@@ -2,23 +2,19 @@ import van from "vanjs-core"
 import EventModal from './EventModal.js'
 import { formatDateToISO } from '../utils/date.js'
 
-const { div, button, h3, span, p } = van.tags
+const { div, button, h3, p } = van.tags
 
 // State management
-const events = van.state([])
 
 // Event List Component
-export default function EventList({ containerId = "events-container" }) {
+export default function EventList(eventState) {
+    const events = eventState
     // Generate unique ID for this event list instance
-    const listId = containerId + "-" + Date.now()
-    
+
     // Add event function
     const addEvent = () => {
         const modal = EventModal({
             title: "Add Event",
-            onClose: () => {
-                modal.remove()
-            },
             onSave: (data) => {
                 const newEvent = {
                     id: Date.now().toString(),
@@ -29,7 +25,6 @@ export default function EventList({ containerId = "events-container" }) {
                     sources: data.eventSources || ''
                 }
                 events.val = [...events.val, newEvent]
-                modal.remove()
             }
         })
         document.body.appendChild(modal)
@@ -41,7 +36,7 @@ export default function EventList({ containerId = "events-container" }) {
         if (!event) return
 
         const modal = EventModal({
-            title: "Edit Event",
+            title: "✍️ Edit Event",
             data: {
                 eventType: event.type,
                 eventDate: formatDateToISO(event.date),
@@ -49,12 +44,9 @@ export default function EventList({ containerId = "events-container" }) {
                 eventPlace: event.place,
                 eventSources: event.sources
             },
-            onClose: () => {
-                modal.remove()
-            },
             onSave: (data) => {
-                events.val = events.val.map(e => 
-                    e.id === eventId 
+                events.val = events.val.map(e =>
+                    e.id === eventId
                         ? {
                             ...e,
                             type: data.eventType,
@@ -65,7 +57,6 @@ export default function EventList({ containerId = "events-container" }) {
                         }
                         : e
                 )
-                modal.remove()
             }
         })
         document.body.appendChild(modal)
@@ -105,7 +96,7 @@ export default function EventList({ containerId = "events-container" }) {
     const toggleSources = (sourcesId) => {
         const sourcesElement = document.getElementById(sourcesId)
         const toggleButton = sourcesElement?.nextElementSibling
-        
+
         if (sourcesElement && toggleButton) {
             if (sourcesElement.classList.contains('collapsed')) {
                 sourcesElement.classList.remove('collapsed')
@@ -131,15 +122,15 @@ export default function EventList({ containerId = "events-container" }) {
             div({ class: "event-header" },
                 div({ class: "event-type" }, eventType),
                 div({ class: "event-actions" },
-                    button({ 
-                        type: "button", 
-                        class: "btn-small btn-edit", 
-                        onclick: () => editEvent(event.id) 
+                    button({
+                        type: "button",
+                        class: "btn-small btn-edit",
+                        onclick: () => editEvent(event.id)
                     }, "Edit"),
-                    button({ 
-                        type: "button", 
-                        class: "btn-small btn-delete", 
-                        onclick: () => deleteEvent(event.id) 
+                    button({
+                        type: "button",
+                        class: "btn-small btn-delete",
+                        onclick: () => deleteEvent(event.id)
                     }, "Delete")
                 )
             ),
@@ -148,15 +139,15 @@ export default function EventList({ containerId = "events-container" }) {
                 event.description ? div({ class: "event-description" }, event.description) : null,
                 event.place ? div({ class: "event-place" }, event.place) : null,
                 hasSources ? div({ class: "sources-container" },
-                    div({ 
-                        class: "event-sources collapsed", 
+                    div({
+                        class: "event-sources collapsed",
                         id: sourcesId,
                         innerHTML: formattedSources
                     }),
-                    button({ 
-                        type: "button", 
-                        class: "sources-toggle", 
-                        onclick: () => toggleSources(sourcesId) 
+                    button({
+                        type: "button",
+                        class: "sources-toggle",
+                        onclick: () => toggleSources(sourcesId)
                     }, "Show more")
                 ) : null
             )
@@ -164,24 +155,24 @@ export default function EventList({ containerId = "events-container" }) {
     }
 
     // Main component structure
-    return div({ id: listId, class: "event-list-container" },
+
+
+    const eventsList = van.derive(() => div({ class: "event-list" },
+        ...events.val.map(event => createEventItem(event)),
+        events.val.val === 0
+            ? p({ class: "no-events" }, "No events added yet. Click 'Add Event' to get started.")
+            : null
+    ))
+
+    return div({ class: "event-list-container" },
         div({ class: "event-list-header" },
             h3({}, "Events"),
-            button({ 
-                type: "button", 
-                class: "btn btn-primary", 
-                onclick: addEvent 
-            }, "Add Event")
+            button({
+                type: "button",
+                class: "add-event-btn",
+                onclick: addEvent
+            }, "+ Add Event")
         ),
-        div({ class: "event-list" },
-            van.tags(() => 
-                events.val.length === 0 
-                    ? p({ class: "no-events" }, "No events added yet. Click 'Add Event' to get started.")
-                    : events.val.map(event => createEventItem(event))
-            )
-        )
+        () => eventsList.val
     )
 }
-
-// Export the events state for external access if needed
-export { events }

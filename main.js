@@ -14,14 +14,21 @@ import { exportRecord } from './js/utils/export.js';
 import { addChild, addSpouse, deleteSpouse, deleteChild } from './js/form/childrenManager.js';
 import { addEvent, editEvent, deleteEvent, closeEventModal, toggleSources } from './js/form/eventManager.js';
 
-// Import VanJS EventList component (example usage)
+// Import VanJS components (example usage)
 // import EventList from './js/components/EventList.js';
+// import ChildList from './js/components/ChildList.js';
 // import van from 'vanjs-core';
 // 
 // Example usage of EventList component:
 // const { div } = van.tags;
-// const eventListComponent = EventList({ containerId: "my-events" });
+// const events = van.state([]);
+// const eventListComponent = EventList(events);
 // document.getElementById('some-container').appendChild(eventListComponent);
+//
+// Example usage of ChildList component:
+// const children = van.state([]);
+// const childListComponent = ChildList(children);
+// document.getElementById('children-container').appendChild(childListComponent);
 
 // Firebase configuration
 const firebaseConfig = {
