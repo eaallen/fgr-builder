@@ -130,11 +130,11 @@ export async function loadUserData() {
 // ==================== AUTO-SAVE FUNCTIONALITY ====================
 
 // Set up auto-save
-export function setupAutoSave() {
-    const form = document.getElementById('familyGroupForm');
-    form.addEventListener('input', debounceAutoSave);
-    form.addEventListener('change', debounceAutoSave);
-}
+// export function setupAutoSave() {
+//     const form = document.getElementById('familyGroupForm');
+//     form.addEventListener('input', debounceAutoSave);
+//     form.addEventListener('change', debounceAutoSave);
+// }
 
 // Debounced auto-save
 export function debounceAutoSave() {
@@ -142,7 +142,7 @@ export function debounceAutoSave() {
         clearTimeout(autoSaveTimeout);
     }
     
-    autoSaveTimeout = setTimeout(autoSave, 1000);
+    autoSaveTimeout = setTimeout(autoSave, 5000);
 }
 
 // Auto-save function

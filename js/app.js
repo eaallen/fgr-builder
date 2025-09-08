@@ -1,7 +1,7 @@
 // ==================== MAIN APPLICATION ====================
 
 import { initializeAuth } from './auth/auth.js';
-import { setupAutoSave } from './firestore/firestore.js';
+// import { setupAutoSave } from './firestore/firestore.js';
 import { initializeForm } from './form/formManager.js';
 import { saveRecord } from './form/formManager.js';
 import { exportRecord } from './utils/export.js';
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeAuth();
     
     // Set up auto-save
-    setupAutoSave();
+    // setupAutoSave();
     
     // Set up keyboard shortcuts
     setupKeyboardShortcuts();

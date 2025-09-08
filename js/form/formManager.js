@@ -15,7 +15,7 @@ const childrenState = vanX.reactive({ kids: [] })
 
 
 van.derive(() =>{ 
-    console.log("debouncing auto save via van state")
+//     console.log("debouncing auto save via van state")
     const formData = collectFormData()
     console.log("formData", formData)
     debounceAutoSave()
@@ -28,6 +28,7 @@ export function initializeForm() {
     inputs.forEach(input => {
         input.addEventListener('blur', validateField);
         input.addEventListener('input', clearFieldError);
+        input.addEventListener('input', debounceAutoSave);
     });
 
     // add events list

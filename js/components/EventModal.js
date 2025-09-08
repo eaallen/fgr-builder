@@ -1,5 +1,6 @@
 import van from "vanjs-core"
 import RichTextEditor from './RichTextEditor.js'
+import { debounceAutoSave } from "../firestore/firestore.js"
 
 const { div, label, input, select, option, small, button, h3, span, textarea, form } = van.tags
 
@@ -11,8 +12,6 @@ export default function EventModal({ title = "Event Modal", onClose = ()=>{}, on
         return null
     }
     modalIsShowing = true
-
-    console.log("startingData", data)
 
     const modalForm = form({ class: "modal" })
 
@@ -34,8 +33,8 @@ export default function EventModal({ title = "Event Modal", onClose = ()=>{}, on
         }
 
 
-        console.log("data------>", data)
         onSave(data)
+        debounceAutoSave()
         remove()
     })
 

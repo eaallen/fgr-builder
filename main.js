@@ -7,12 +7,13 @@ import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, o
 
 // Import application modules
 import { initializeAuth } from './js/auth/auth.js';
-import { setupAutoSave } from './js/firestore/firestore.js';
+// import { setupAutoSave } from './js/firestore/firestore.js';
 import { initializeForm } from './js/form/formManager.js';
 import { saveRecord } from './js/form/formManager.js';
 import { exportRecord } from './js/utils/export.js';
 import { addChild, addSpouse, deleteSpouse, deleteChild } from './js/form/childrenManager.js';
 import {  closeEventModal } from './js/form/eventManager.js';
+import { debounceAutoSave } from './js/firestore/firestore.js';
 
 // Import VanJS components (example usage)
 // import EventList from './js/components/EventList.js';
@@ -92,13 +93,16 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeAuth();
     
     // Set up auto-save
-    setupAutoSave();
+    // setupAutoSave();
     
     // Set up keyboard shortcuts
     setupKeyboardShortcuts();
     
     // Set up modal close on outside click
     setupModalHandlers();
+    
+    // Set up mutation observer for body tag
+    setupMutationObserver();
 });
 
 // Set up keyboard shortcuts
@@ -135,4 +139,79 @@ function setupModalHandlers() {
             closeEventModal();
         }
     };
+}
+
+// Set up mutation observer for body tag
+function setupMutationObserver() {
+    // Create a new MutationObserver instance
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            // Handle different types of mutations
+            switch(mutation.type) {
+                case 'childList':
+                    // Handle added nodes
+                    if (mutation.addedNodes.length > 0) {
+                        console.log('Nodes added to body:', mutation.addedNodes);
+                        
+                        // Check if any added nodes are modals
+                        mutation.addedNodes.forEach(node => {
+                            if (node.nodeType === Node.ELEMENT_NODE) {
+                                if (node.classList && node.classList.contains('modal')) {
+                                    console.log('Modal added to DOM:', node);
+                                    // You can add specific logic here for when modals are added
+                                }
+                                
+                                // Check for event items
+                                if (node.classList && node.classList.contains('event-item')) {
+                                    console.log('Event item added to DOM:', node);
+                                    // You can add specific logic here for when event items are added
+                                }
+                            }
+                        });
+                    }
+                    
+                    // Handle removed nodes
+                    if (mutation.removedNodes.length > 0) {
+                        console.log('Nodes removed from body:', mutation.removedNodes);
+                        
+                        // Check if any removed nodes are modals
+                        mutation.removedNodes.forEach(node => {
+                            if (node.nodeType === Node.ELEMENT_NODE) {
+                                if (node.classList && node.classList.contains('modal')) {
+                                    console.log('Modal removed from DOM:', node);
+                                    // You can add specific logic here for when modals are removed
+                                }
+                            }
+                        });
+                    }
+                    break;
+                    
+                case 'attributes':
+                    // Handle attribute changes
+                    console.log('Attribute changed:', mutation.attributeName, 'on', mutation.target);
+                    break;
+                    
+                case 'characterData':
+
+                    // Handle text content changes
+                    console.log('Text content changed:', mutation.target);
+                    break;
+            }
+        });
+    });
+    
+    // Configuration for the observer
+    const config = {
+        childList: true,        // Observe direct children
+        subtree: true,          // Observe all descendants
+        attributes: true,       // Observe attribute changes
+        attributeOldValue: true, // Include old attribute values
+        characterData: true,    // Observe text content changes
+        characterDataOldValue: true // Include old text content
+    };
+    
+    // Start observing the body element
+    observer.observe(document.getElementById('familyGroupForm'), config);
+        
+    console.log('Mutation observer set up for body tag');
 }
