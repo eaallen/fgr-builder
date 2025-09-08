@@ -290,6 +290,9 @@ body {
     gap: 12px;
     transition: all 0.2s ease;
     position: relative;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .event-item:hover {
@@ -348,6 +351,22 @@ body {
     color: #6b7280;
     font-size: 0.85rem;
     line-height: 1.4;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+.event-sources a {
+    color: #4f46e5;
+    text-decoration: none;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow-wrap: break-word;
+}
+
+.event-sources a:hover {
+    text-decoration: underline;
 }
 
 .event-sources.expanded {
@@ -484,6 +503,9 @@ body {
 
 .sources-container {
     position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .source-link {
