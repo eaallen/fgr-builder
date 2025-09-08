@@ -21,9 +21,9 @@ export function initializeAuth() {
         } else {
             console.log('User signed out');
             // Import and call clearForm dynamically
-            import('../form/formManager.js').then(module => {
-                module.clearForm();
-            });
+            // import('../form/formManager.js').then(module => {
+            //     module.clearForm();
+            // });
         }
     });
     
@@ -59,16 +59,25 @@ export function updateAuthUI(user) {
     const userInfo = document.getElementById('userInfo');
     const loginSection = document.getElementById('loginSection');
     const userName = document.getElementById('userName');
+    const form = document.getElementById('familyGroupForm');
     
     if (user) {
         // User is signed in
         userInfo.style.display = 'flex';
         loginSection.style.display = 'none';
         userName.textContent = user.displayName || user.email;
+        // Remove blur from form
+        if (form) {
+            form.classList.remove('blurred');
+        }
     } else {
         // User is signed out
         userInfo.style.display = 'none';
         loginSection.style.display = 'block';
+        // Add blur to form
+        if (form) {
+            form.classList.add('blurred');
+        }
     }
 }
 

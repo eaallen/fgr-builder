@@ -111,6 +111,13 @@ body {
 /* Form Styles */
 .form {
     padding: 40px;
+    transition: filter 0.3s ease;
+}
+
+.form.blurred {
+    filter: blur(5px);
+    pointer-events: none;
+    user-select: none;
 }
 
 /* Family Header */
