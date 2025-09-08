@@ -6,7 +6,7 @@ import { saveToFirestore } from '../firestore/firestore.js';
 import van from 'vanjs-core';
 import EventList from '../components/EventList.js';
 import { debounceAutoSave } from '../firestore/firestore.js';
-import ChildList from '../components/ChildList.js';
+import ChildList, { ChildListV2 } from '../components/ChildList.js';
 
 const fatherEvents = van.state([])
 const motherEvents = van.state([])
@@ -31,7 +31,7 @@ export function initializeForm() {
     // add events list
     van.add(document.getElementById('fatherEvents'), EventList(fatherEvents))
     van.add(document.getElementById('motherEvents'), EventList(motherEvents))
-    van.add(document.getElementById('childrenList'), ChildList(children))
+    van.add(document.getElementById('childrenList'), ChildListV2(children))
 }
 
 // Collect form data using FormData
