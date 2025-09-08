@@ -4,13 +4,15 @@ import { generateChildId } from '../utils/uuid.js';
 import { validateField, clearFieldError } from '../utils/validation.js';
 import { saveToFirestore } from '../firestore/firestore.js';
 import van from 'vanjs-core';
+import * as vanX from 'vanjs-ext';
 import EventList from '../components/EventList.js';
 import { debounceAutoSave } from '../firestore/firestore.js';
-import ChildList, { ChildListV2 } from '../components/ChildList.js';
+import ChildList from '../components/ChildList.js';
 
 const fatherEvents = van.state([])
 const motherEvents = van.state([])
-const children = van.state([])
+const childrenState = vanX.reactive({ kids: [] })
+
 
 van.derive(() =>{ 
     console.log("debouncing auto save via van state")
@@ -31,7 +33,7 @@ export function initializeForm() {
     // add events list
     van.add(document.getElementById('fatherEvents'), EventList(fatherEvents))
     van.add(document.getElementById('motherEvents'), EventList(motherEvents))
-    van.add(document.getElementById('childrenList'), ChildListV2(children))
+    van.add(document.getElementById('childrenList'), ChildList({state: childrenState}))
 }
 
 // Collect form data using FormData
@@ -60,8 +62,8 @@ export function collectFormData() {
         events: motherEvents.val
     };
     
-    data.children = children.val;
-    
+    data.children = childrenState.kids;
+
     data.preparer = {
         name: data.preparerName || '',
         address: data.preparerAddress || '',
@@ -206,7 +208,7 @@ export function populateForm(data) {
         if (data.mother.mother) document.getElementById('motherMother').value = data.mother.mother;
         if (data.mother.events) motherEvents.val = data.mother.events
     }
-    if (data.children) children.val = data.children;
+    if (data.children) childrenState.kids = data.children;
     if (data.preparer) {
         if (data.preparer.name) document.getElementById('preparerName').value = data.preparer.name;
         if (data.preparer.address) document.getElementById('preparerAddress').value = data.preparer.address;

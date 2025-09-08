@@ -5,8 +5,7 @@ import { generateChildId, generateSpouseId } from '../utils/uuid.js'
 const { div, button, h3, h5, input} = van.tags
 
 
-export function ChildListV2() {
-    const state = vanX.reactive({ kids: [] })
+export default function ChildListV2({state}) {
     van.derive(() => {
         console.log("children", state.kids)
     })
