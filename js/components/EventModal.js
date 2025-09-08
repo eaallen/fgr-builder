@@ -94,7 +94,7 @@ export default function EventModal({ title = "Event Modal", onClose = ()=>{}, on
                     label({ for: "eventDate" },
                         "Date:",
                     ),
-                    input({ type: "date", id: "eventDate", name: "eventDate", class: "form-input" }),
+                    input({ type: "date", id: "eventDate", name: "eventDate", class: "form-input", required: true }),
                 ),
                 div({ class: "form-group" },
                     label({ for: "eventDescription" },

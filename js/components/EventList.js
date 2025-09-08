@@ -157,12 +157,21 @@ export default function EventList(eventState) {
     // Main component structure
 
 
-    const eventsList = van.derive(() => div({ class: "event-list" },
-        ...events.val.map(event => createEventItem(event)),
-        events.val.val === 0
-            ? p({ class: "no-events" }, "No events added yet. Click 'Add Event' to get started.")
-            : null
-    ))
+    const eventsList = van.derive(() => {
+        // Sort events by date (most recent first)
+        const sortedEvents = [...events.val].sort((a, b) => {
+            const dateA = new Date(a.date || '1900-01-01')
+            const dateB = new Date(b.date || '1900-01-01')
+            return dateA - dateB 
+        })
+        
+        return div({ class: "event-list" },
+            ...sortedEvents.map(event => createEventItem(event)),
+            events.val.length === 0
+                ? p({ class: "no-events" }, "No events added yet. Click 'Add Event' to get started.")
+                : null
+        )
+    })
 
     return div({ class: "event-list-container" },
         div({ class: "event-list-header" },

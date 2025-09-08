@@ -6,9 +6,11 @@ import { saveToFirestore } from '../firestore/firestore.js';
 import van from 'vanjs-core';
 import EventList from '../components/EventList.js';
 import { debounceAutoSave } from '../firestore/firestore.js';
+import ChildList from '../components/ChildList.js';
 
 const fatherEvents = van.state([])
 const motherEvents = van.state([])
+const children = van.state([])
 
 van.derive(() =>{ 
     console.log("debouncing auto save via van state")
@@ -29,6 +31,7 @@ export function initializeForm() {
     // add events list
     van.add(document.getElementById('fatherEvents'), EventList(fatherEvents))
     van.add(document.getElementById('motherEvents'), EventList(motherEvents))
+    van.add(document.getElementById('childrenList'), ChildList(children))
 }
 
 // Collect form data using FormData
@@ -57,7 +60,7 @@ export function collectFormData() {
         events: motherEvents.val
     };
     
-    data.children = collectChildren();
+    data.children = children.val;
     
     data.preparer = {
         name: data.preparerName || '',
@@ -203,7 +206,7 @@ export function populateForm(data) {
         if (data.mother.mother) document.getElementById('motherMother').value = data.mother.mother;
         if (data.mother.events) motherEvents.val = data.mother.events
     }
-    if (data.children) populateChildren(data.children);
+    if (data.children) children.val = data.children;
     if (data.preparer) {
         if (data.preparer.name) document.getElementById('preparerName').value = data.preparer.name;
         if (data.preparer.address) document.getElementById('preparerAddress').value = data.preparer.address;
@@ -212,26 +215,7 @@ export function populateForm(data) {
     if (data.comments) document.getElementById('comments').value = data.comments;
 }
 
-// Collect events from a container
-function collectEvents(containerId) {
-    const events = [];
-    const eventsList = document.getElementById(containerId);
-    
-    Array.from(eventsList.children).forEach(eventItem => {
-        const event = {
-            type: eventItem.querySelector('.event-type').textContent.toLowerCase(),
-            date: eventItem.querySelector('.event-date').textContent,
-            place: eventItem.querySelector('.event-place')?.textContent || '',
-            description: eventItem.querySelector('.event-description')?.textContent || '',
-            sources: eventItem.querySelector('.event-sources')?.textContent || ''
-        };
-        events.push(event);
-    });
 
-    console.log("events", events);
-    
-    return events;
-}
 
 // Collect children data
 function collectChildren() {
