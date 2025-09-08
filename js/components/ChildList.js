@@ -1,11 +1,12 @@
 import van from "vanjs-core"
+import * as vanX from 'vanjs-ext'
 import { generateChildId, generateSpouseId } from '../utils/uuid.js'
 
-const { div, button, h3, h5, p, input, span } = van.tags
+const { div, button, h3, h5, p, input } = van.tags
 
 // Child List Component
 export default function ChildList(childrenState) {
-    const children = childrenState
+    const children = vanX.reactive({})
 
     // Add child function
     const addChild = () => {
@@ -15,7 +16,8 @@ export default function ChildList(childrenState) {
             name: '',
             spouses: []
         }
-        children.val = [...children.val, newChild]
+        // children.val = [...children.val, newChild]
+        children[childId] = newChild
     }
 
     // Add spouse function
@@ -25,9 +27,9 @@ export default function ChildList(childrenState) {
             id: spouseId,
             name: ''
         }
-        
-        children.val = children.val.map(child => 
-            child.id === childId 
+
+        children.val = children.val.map(child =>
+            child.id === childId
                 ? { ...child, spouses: [...child.spouses, newSpouse] }
                 : child
         )
@@ -36,15 +38,15 @@ export default function ChildList(childrenState) {
     // Delete child function
     const deleteChild = (childId) => {
         if (confirm('Are you sure you want to delete this child and all their information?')) {
-            children.val = children.val.filter(child => child.id !== childId)
+            delete children[childId]
         }
     }
 
     // Delete spouse function
     const deleteSpouse = (childId, spouseId) => {
         if (confirm('Are you sure you want to delete this spouse?')) {
-            children.val = children.val.map(child => 
-                child.id === childId 
+            children.val = children.val.map(child =>
+                child.id === childId
                     ? { ...child, spouses: child.spouses.filter(spouse => spouse.id !== spouseId) }
                     : child
             )
@@ -53,21 +55,17 @@ export default function ChildList(childrenState) {
 
     // Update child name
     const updateChildName = (childId, newName) => {
-        children.val = children.val.map(child => 
-            child.id === childId 
-                ? { ...child, name: newName }
-                : child
-        )
+        children[childId].name = newName
     }
 
     // Update spouse name
     const updateSpouseName = (childId, spouseId, newName) => {
-        children.val = children.val.map(child => 
-            child.id === childId 
-                ? { 
-                    ...child, 
-                    spouses: child.spouses.map(spouse => 
-                        spouse.id === spouseId 
+        children.val = children.val.map(child =>
+            child.id === childId
+                ? {
+                    ...child,
+                    spouses: child.spouses.map(spouse =>
+                        spouse.id === spouseId
                             ? { ...spouse, name: newName }
                             : spouse
                     )
@@ -79,35 +77,39 @@ export default function ChildList(childrenState) {
     // Create spouse item element
     const createSpouseItem = (childId, spouse) => {
         return div({ class: "spouse-item" },
-            input({ 
-                type: "text", 
-                class: "spouse-input", 
+            input({
+                type: "text",
+                class: "spouse-input",
                 placeholder: "Spouse's Name",
                 value: spouse.name,
                 oninput: (e) => updateSpouseName(childId, spouse.id, e.target.value)
             }),
-            button({ 
-                class: "btn-small btn-delete", 
-                onclick: () => deleteSpouse(childId, spouse.id) 
+            button({
+                class: "btn-small btn-delete",
+                onclick: () => deleteSpouse(childId, spouse.id)
             }, "Delete")
         )
     }
 
     // Create child item element
     const createChildItem = (child) => {
+      
+        console.log("child", child)
         return div({ class: "child-item" },
             div({ class: "child-header" },
-                input({ 
-                    type: "text", 
-                    class: "child-name-input", 
+                input({
+                    type: "text",
+                    class: "child-name-input",
                     placeholder: "Child's Name",
                     value: child.name,
-                    oninput: (e) => updateChildName(child.id, e.target.value)
+                    oninput: (e) => {
+                        updateChildName(child.id, e.target.value)
+                    }
                 }),
                 div({ class: "child-actions" },
-                    button({ 
-                        class: "btn-small btn-delete", 
-                        onclick: () => deleteChild(child.id) 
+                    button({
+                        class: "btn-small btn-delete",
+                        onclick: () => deleteChild(child.id)
                     }, "Delete")
                 )
             ),
@@ -116,19 +118,27 @@ export default function ChildList(childrenState) {
                 div({ class: "spouses-list" },
                     ...child.spouses.map(spouse => createSpouseItem(child.id, spouse))
                 ),
-                button({ 
-                    type: "button", 
-                    class: "add-spouse-btn", 
-                    onclick: () => addSpouse(child.id) 
+                button({
+                    type: "button",
+                    class: "add-spouse-btn",
+                    onclick: () => addSpouse(child.id)
                 }, "+ Add Spouse")
             )
         )
+
     }
 
     // Main component structure
     const childrenList = van.derive(() => div({ class: "children-list" },
-        ...children.val.map(child => createChildItem(child)),
-        children.val.length === 0
+        // vanX.list(div, children, child => createChildItem(child)),
+        ...Object.values(children).map(child => (dom) => {
+            console.log("dom", dom, children, children[child.id], children[child.id].name.oldVal, children[child.id].name.val)
+            if(dom && children[child.id].name.oldVal !== children[child.id].name.val){
+                return p("eli was here")
+            }
+            return createChildItem(child)
+        }),
+        Object.values(children).length === 0
             ? p({ class: "no-children" }, "No children added yet. Click 'Add Child' to get started.")
             : null
     ))
@@ -139,9 +149,11 @@ export default function ChildList(childrenState) {
             button({
                 type: "button",
                 class: "add-child-btn",
-                onclick: addChild
+                onclick: addChild,
+                disabled: true
             }, "+ Add Child")
         ),
-        () => childrenList.val
+        // () => childrenList.val
+        p({ class: "no-children" }, "Coming Soon")
     )
 }
