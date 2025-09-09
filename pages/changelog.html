@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changelog - Family Group Record Builder</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="apple-touch-icon" href="../favicon.svg">
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .changelog-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+        
+        .changelog-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .changelog-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #4f46e5;
+        }
+        
+        .changelog-header p {
+            font-size: 1.1rem;
+            color: #6b7280;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: #4f46e5;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 30px;
+        }
+        
+        .back-button:hover {
+            background: #3730a3;
+            transform: translateY(-1px);
+        }
+        
+        .version {
+            margin-bottom: 40px;
+            padding: 24px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 4px solid #4f46e5;
+        }
+        
+        .version-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .version-number {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .version-date {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .version-description {
+            color: #4b5563;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+        
+        .changes-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .changes-list li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            color: #374151;
+        }
+        
+        .changes-list li::before {
+            content: "•";
+            color: #4f46e5;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        .change-type {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-right: 8px;
+        }
+        
+        .change-type.new {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .change-type.improvement {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .change-type.fix {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .change-type.breaking {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .no-changes {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            padding: 40px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="changelog-container">
+            <a href="../index.html" class="back-button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back to App
+            </a>
+            
+            <div class="changelog-header">
+                <h1>Changelog</h1>
+                <p>Track the major updates and improvements to the Family Group Record Builder</p>
+            </div>
+            
+            <!-- Version 1.0.0 -->
+            <div class="version">
+                <div class="version-header">
+                    <span class="version-number">v0.0.1</span>
+                    <span class="version-date">September 2025</span>
+                </div>
+                <div class="version-description">
+                    Initial release of the Family Group Record Builder with comprehensive functionality for creating professional genealogy records.
+                </div>
+                <ul class="changes-list">
+                    <li><span class="change-type new">New</span> Complete family group record form with father and mother sections</li>
+                    <li><span class="change-type new">New</span> Parent information fields for both parents</li>
+                    <li><span class="change-type new">New</span> Dynamic children management with add/remove functionality</li>
+                    <li><span class="change-type new">New</span> Event management system for birth, death, and marriage records</li>
+                    <li><span class="change-type new">New</span> Rich text editor for comments and notes</li>
+                    <li><span class="change-type new">New</span> Google authentication for secure user accounts</li>
+                    <li><span class="change-type new">New</span> Cloud storage integration with Firebase Firestore</li>
+                    <li><span class="change-type new">New</span> Real-time auto-save functionality to prevent data loss</li>
+                    <li><span class="change-type new">New</span> Preparer information section</li>
+                    <li><span class="change-type new">New</span> Modern, responsive design with top navigation</li>
+                    <li><span class="change-type new">New</span> Changelog page for tracking updates</li>
+                </ul>
+            </div>
+            
+            <div class="no-changes">
+                <p>That's all for now! Check back regularly for updates and new features.</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
