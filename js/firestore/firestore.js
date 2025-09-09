@@ -10,21 +10,21 @@ let isAutoSaving = false;
 // Save data to Firestore
 export async function saveToFirestore(data) {
     const currentUser = getCurrentUser();
-    
+
     if (!currentUser) {
         console.log('No user signed in, saving to localStorage instead');
         return saveToLocalStorage(data);
     }
-    
+
     try {
         const userDocRef = doc(db, 'users', currentUser.uid);
-        
+
         const userData = {
             ...data,
             lastUpdated: new Date().toISOString(),
             userId: currentUser.uid
         };
-        
+
         await setDoc(userDocRef, userData, { merge: true });
         console.log('Data saved to Firestore successfully');
         return true;
@@ -38,20 +38,20 @@ export async function saveToFirestore(data) {
 // Load data from Firestore
 export async function loadFromFirestore() {
     const currentUser = getCurrentUser();
-    
+
     if (!currentUser) {
         console.log('No user signed in, loading from localStorage instead');
         return loadFromLocalStorage();
     }
-    
+
     try {
         const userDocRef = doc(db, 'users', currentUser.uid);
         const docSnap = await getDoc(userDocRef);
-        
+
         if (docSnap.exists()) {
             const data = docSnap.data();
             console.log('Data loaded from Firestore:', data);
-            
+
             // Import and call populateForm dynamically
             populateForm(data);
             return data;
@@ -85,7 +85,7 @@ export function loadFromLocalStorage() {
         // Find the most recent record
         let latestRecord = null;
         let latestTime = 0;
-        
+
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key.startsWith('fgr_')) {
@@ -97,17 +97,14 @@ export function loadFromLocalStorage() {
                 }
             }
         }
-        
+
         if (latestRecord) {
             console.log('Data loaded from localStorage:', latestRecord);
-            
-            // Import and call populateForm dynamically
-            import('../form/formManager.js').then(module => {
-                module.populateForm(latestRecord);
-            });
+
+            populateForm(latestRecord);
             return latestRecord;
         }
-        
+
         return null;
     } catch (error) {
         console.error('Error loading from localStorage:', error);
@@ -119,7 +116,7 @@ export function loadFromLocalStorage() {
 export async function loadUserData() {
     const currentUser = getCurrentUser();
     if (!currentUser) return;
-    
+
     try {
         await loadFromFirestore();
     } catch (error) {
@@ -141,8 +138,8 @@ export function debounceAutoSave() {
     if (autoSaveTimeout) {
         clearTimeout(autoSaveTimeout);
     }
-    
-    autoSaveTimeout = setTimeout(autoSave, 5000);
+
+    autoSaveTimeout = setTimeout(autoSave, 1000);
 }
 
 // Auto-save function
@@ -150,13 +147,13 @@ export async function autoSave() {
     const currentUser = getCurrentUser();
     if (!currentUser) { return }
     if (isAutoSaving) return;
-    
+
     isAutoSaving = true;
-    
+
     try {
         const formData = collectFormData();
         const success = await saveToFirestore(formData);
-        
+
         if (success) {
             showAutoSaveIndicator('Saved automatically');
         }
@@ -189,10 +186,10 @@ function showAutoSaveIndicator(message) {
         `;
         document.body.appendChild(indicator);
     }
-    
+
     indicator.textContent = message;
     indicator.style.opacity = '1';
-    
+
     setTimeout(() => {
         indicator.style.opacity = '0';
     }, 1500);

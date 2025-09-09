@@ -9,13 +9,26 @@ import EventList from '../components/EventList.js';
 import { debounceAutoSave } from '../firestore/firestore.js';
 import ChildList from '../components/ChildList.js';
 
+
+
+
+const formHasBeenPopulated = van.state(false)
 const fatherEvents = van.state([])
 const motherEvents = van.state([])
 const childrenState = vanX.reactive({ kids: [] })
 
 
 van.derive(() =>{ 
-//     console.log("debouncing auto save via van state")
+
+    
+    if(!formHasBeenPopulated.val) {
+        return // do not start auto saving until the form has been populated
+    }
+    
+    if(fatherEvents.oldVal === fatherEvents.val && motherEvents.oldVal === motherEvents.val && childrenState.kids.length === 0) {
+        return // not going to auto save if out states are all empty
+    }
+    
     const formData = collectFormData()
     console.log("formData", formData)
     debounceAutoSave()
@@ -188,6 +201,7 @@ export async function saveRecord() {
 
 // Populate form with data
 export function populateForm(data) {
+    formHasBeenPopulated.val = true
     if (!data) return;
 
     if(data.fatherName) document.getElementById('fatherName').value = data.fatherName
