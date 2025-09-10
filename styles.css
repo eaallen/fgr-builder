@@ -346,6 +346,8 @@ body {
     margin-bottom: 15px;
 }
 
+
+
 .event-item {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
@@ -642,6 +644,7 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-bottom: 8px;
 }
 
 .add-event-btn:hover {
@@ -663,11 +666,26 @@ body {
     border-radius: 8px;
     padding: 20px;
     transition: all 0.2s ease;
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
 }
 
 .child-item:hover {
     border-color: #c7d2fe;
     background: #f1f5f9;
+}
+
+.child-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+}
+
+.events-section {
+    flex: 1;
+    width: 100%;
 }
 
 .child-header {
@@ -759,7 +777,7 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 0 auto;
+    margin: 8px auto;
 }
 
 .add-child-btn:hover {
@@ -1076,11 +1094,16 @@ button:disabled:hover,
     .event-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 10px;
+        gap: 5px;
     }
     
     .event-actions {
         align-self: flex-end;
+    }
+    
+    .child-item {
+        flex-direction: column;
+        gap: 20px;
     }
     
     .action-buttons {

@@ -9,14 +9,9 @@ import EventList from '../components/EventList.js';
 import { debounceAutoSave } from '../firestore/firestore.js';
 import ChildList from '../components/ChildList.js';
 
-
-
-
 const formHasBeenPopulated = van.state(false)
-const fatherEvents = van.state([])
-const motherEvents = van.state([])
-const childrenState = vanX.reactive({ kids: [] })
-
+const globalState = vanX.reactive({ kids: [], fatherEvents: [], motherEvents: [] })
+const {fatherEvents, motherEvents} = vanX.stateFields(globalState)
 
 van.derive(() =>{ 
 
@@ -25,7 +20,7 @@ van.derive(() =>{
         return // do not start auto saving until the form has been populated
     }
     
-    if(fatherEvents.oldVal === fatherEvents.val && motherEvents.oldVal === motherEvents.val && childrenState.kids.length === 0) {
+    if(fatherEvents.oldVal === fatherEvents.val && motherEvents.oldVal === motherEvents.val && globalState.kids.length === 0) {
         return // not going to auto save if out states are all empty
     }
     
@@ -47,7 +42,7 @@ export function initializeForm() {
     // add events list
     van.add(document.getElementById('fatherEvents'), EventList(fatherEvents))
     van.add(document.getElementById('motherEvents'), EventList(motherEvents))
-    van.add(document.getElementById('childrenList'), ChildList({state: childrenState}))
+    van.add(document.getElementById('childrenList'), ChildList({state: globalState}))
 }
 
 // Collect form data using FormData
@@ -76,7 +71,7 @@ export function collectFormData() {
         events: motherEvents.val
     };
     
-    data.children = childrenState.kids;
+    data.children = globalState.kids;
 
     data.preparer = {
         name: data.preparerName || '',
@@ -223,7 +218,7 @@ export function populateForm(data) {
         if (data.mother.mother) document.getElementById('motherMother').value = data.mother.mother;
         if (data.mother.events) motherEvents.val = data.mother.events
     }
-    if (data.children) childrenState.kids = data.children;
+    if (data.children) globalState.kids = data.children;
     if (data.preparer) {
         if (data.preparer.name) document.getElementById('preparerName').value = data.preparer.name;
         if (data.preparer.address) document.getElementById('preparerAddress').value = data.preparer.address;

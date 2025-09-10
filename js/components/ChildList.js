@@ -1,11 +1,13 @@
 import van from "vanjs-core"
 import * as vanX from 'vanjs-ext'
 import { generateChildId, generateSpouseId } from '../utils/uuid.js'
+import EventList from "./EventList.js"
 
-const { div, button, h3, h5, input} = van.tags
+const { div, button, h3, h5, input } = van.tags
 
 
-export default function ChildListV2({state}) {
+export default function ChildListV2({ state }) {
+    const legacyState = vanX.stateFields(state)
     van.derive(() => {
         console.log("children", state.kids)
     })
@@ -64,6 +66,7 @@ export default function ChildListV2({state}) {
                     state.kids = [...state.kids, {
                         name: "",
                         spouses: [],
+                        events: [],
                         id: generateChildId()
                     }]
                 }
@@ -72,31 +75,38 @@ export default function ChildListV2({state}) {
         ),
 
         () => vanX.list(div, state.kids, kid => {
-            console.log("render child");
+            const eventsState = vanX.stateFields(kid.val).events
 
             return div({ class: "child-item" },
-                input({
-                    type: "text",
-                    class: "child-name-input",
-                    placeholder: "Child's Name",
-                    value: () => kid.val.name,
-                    oninput: (e) => {
-                        kid.val.name = e.target.value
-                    }
-                }),
-                div({ class: "spouses-section" },
-                    h5({}, "Spouses"),
-                    () => vanX.list(
-                        div({ class: "spouses-list" }),
-                        kid.val.spouses,
-                        spouse => CreateSpouseItem(kid.val.id, spouse.val)),
-                    button({
-                        type: "button",
-                        class: "add-spouse-btn",
-                        onclick: () => addSpouse(kid.val.id)
-                    }, "+ Add Spouse")
-
-                ))
+                div({ class: "child-info-section" },
+                    div(
+                        input({
+                            type: "text",
+                            class: "child-name-input",
+                            placeholder: "Child's Name",
+                            value: () => kid.val.name,
+                            oninput: (e) => {
+                                kid.val.name = e.target.value
+                            }
+                        }),
+                        div({ class: "spouses-section" },
+                            h5({}, "Spouses"),
+                            () => vanX.list(
+                                div({ class: "spouses-list" }),
+                                kid.val.spouses,
+                                spouse => CreateSpouseItem(kid.val.id, spouse.val)),
+                            button({
+                                type: "button",
+                                class: "add-spouse-btn",
+                                onclick: () => addSpouse(kid.val.id)
+                            }, "+ Add Spouse")
+                        )
+                    )
+                ),
+                div({ class: "events-section" },
+                    EventList(eventsState)
+                )
+            )
         })
     )
 }
