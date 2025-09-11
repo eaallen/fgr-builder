@@ -10,7 +10,7 @@ import { initializeAuth } from './js/auth/auth.js';
 // import { setupAutoSave } from './js/firestore/firestore.js';
 import { initializeForm } from './js/form/formManager.js';
 import { saveRecord } from './js/form/formManager.js';
-import { exportRecord } from './js/utils/export.js';
+import { exportRecord, exportRecordAsPDF } from './js/utils/export.js';
 import { addChild, addSpouse, deleteSpouse, deleteChild } from './js/form/childrenManager.js';
 import {  closeEventModal } from './js/form/eventManager.js';
 import { debounceAutoSave } from './js/firestore/firestore.js';
@@ -122,10 +122,16 @@ function setupKeyboardShortcuts() {
             saveRecord();
         }
         
-        // Ctrl+E to export
+        // Ctrl+E to export as text
         if (event.ctrlKey && event.key === 'e') {
             event.preventDefault();
             exportRecord();
+        }
+        
+        // Ctrl+Shift+E to export as PDF
+        if (event.ctrlKey && event.shiftKey && event.key === 'E') {
+            event.preventDefault();
+            exportRecordAsPDF();
         }
     });
 }

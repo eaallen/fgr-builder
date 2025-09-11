@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Export Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>PDF Export Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Data</h2>
+        <p>This page tests the PDF export functionality with sample data.</p>
+        
+        <button onclick="testPDFExport()">Test PDF Export</button>
+        <button onclick="testHTMLGeneration()">Test HTML Generation</button>
+    </div>
+    
+    <div id="html-output" class="test-section" style="display: none;">
+        <h3>Generated HTML Preview:</h3>
+        <div id="html-content"></div>
+    </div>
+
+    <script type="module">
+        import { exportRecordAsPDF } from './js/utils/export.js';
+        
+        // Make function available globally
+        window.exportRecordAsPDF = exportRecordAsPDF;
+        
+        // Sample form data for testing
+        const sampleData = {
+            recordDate: '2024-01-15',
+            father: {
+                name: 'John Smith',
+                father: 'Robert Smith',
+                mother: 'Mary Johnson',
+                events: [
+                    {
+                        type: 'Birth',
+                        date: '1950-05-15',
+                        place: 'New York, NY',
+                        description: 'Born at home',
+                        sources: 'Family Bible'
+                    },
+                    {
+                        type: 'Marriage',
+                        date: '1975-06-20',
+                        place: 'Chicago, IL',
+                        description: 'Married to Jane Doe',
+                        sources: 'Marriage Certificate'
+                    }
+                ]
+            },
+            mother: {
+                name: 'Jane Doe',
+                father: 'William Doe',
+                mother: 'Sarah Wilson',
+                events: [
+                    {
+                        type: 'Birth',
+                        date: '1952-08-10',
+                        place: 'Los Angeles, CA',
+                        description: 'Born in hospital',
+                        sources: 'Birth Certificate'
+                    }
+                ]
+            },
+            children: [
+                {
+                    name: 'Michael Smith',
+                    spouses: ['Lisa Brown']
+                },
+                {
+                    name: 'Sarah Smith',
+                    spouses: ['David Johnson', 'Tom Wilson']
+                }
+            ],
+            preparer: {
+                name: 'Alice Researcher',
+                address: '123 Genealogy St, Research City, RC 12345',
+                email: 'alice@example.com'
+            },
+            comments: 'This is a test family record for PDF export functionality.'
+        };
+        
+        // Mock the form validation and data collection
+        window.validateForm = () => true;
+        
+        // Mock the collectFormData function
+        window.collectFormData = () => sampleData;
+        
+        function testPDFExport() {
+            try {
+                exportRecordAsPDF();
+                console.log('PDF export initiated successfully');
+            } catch (error) {
+                console.error('Error testing PDF export:', error);
+                alert('Error testing PDF export: ' + error.message);
+            }
+        }
+        
+        function testHTMLGeneration() {
+            try {
+                // Import the createHTMLTable function (we'll need to export it)
+                import('./js/utils/export.js').then(module => {
+                    // Since createHTMLTable is not exported, we'll create a simple test
+                    const htmlContent = createTestHTML(sampleData);
+                    document.getElementById('html-content').innerHTML = htmlContent;
+                    document.getElementById('html-output').style.display = 'block';
+                });
+            } catch (error) {
+                console.error('Error testing HTML generation:', error);
+                alert('Error testing HTML generation: ' + error.message);
+            }
+        }
+        
+        function createTestHTML(data) {
+            return `
+                <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
+                    <h1 style="text-align: center; color: #333; margin-bottom: 30px;">FAMILY GROUP RECORD</h1>
+                    
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd; background-color: #f5f5f5; font-weight: bold;">Record Date:</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">${data.recordDate}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd; background-color: #f5f5f5; font-weight: bold;">Family of:</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">${data.father.name} and ${data.mother.name}</td>
+                        </tr>
+                    </table>
+                    
+                    <h2 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 5px; margin-top: 30px;">FATHER: ${data.father.name}</h2>
+                    <p><strong>Parents:</strong> Father: ${data.father.father}, Mother: ${data.father.mother}</p>
+                    <p><strong>Events:</strong> ${data.father.events.length} events recorded</p>
+                    
+                    <h2 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 5px; margin-top: 30px;">MOTHER: ${data.mother.name}</h2>
+                    <p><strong>Parents:</strong> Father: ${data.mother.father}, Mother: ${data.mother.mother}</p>
+                    <p><strong>Events:</strong> ${data.mother.events.length} events recorded</p>
+                    
+                    <h2 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 5px; margin-top: 30px;">CHILDREN</h2>
+                    <p>${data.children.length} children recorded</p>
+                    
+                    <h2 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 5px; margin-top: 30px;">PREPARER</h2>
+                    <p><strong>Name:</strong> ${data.preparer.name}</p>
+                    <p><strong>Email:</strong> ${data.preparer.email}</p>
+                </div>
+            `;
+        }
+        
+        window.testPDFExport = testPDFExport;
+        window.testHTMLGeneration = testHTMLGeneration;
+    </script>
+</body>
+</html>
