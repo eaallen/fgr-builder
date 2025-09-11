@@ -32,10 +32,32 @@ export default function EventModal({ title = "Event Modal", onClose = ()=>{}, on
             data[key] = value
         }
 
+        // Handle custom event type: if "other" is selected and custom input has value, use custom value
+        if (data.eventType === "other" && data.customEventType && data.customEventType.trim()) {
+            data.eventType = data.customEventType.trim()
+        }
+        // Remove the customEventType from the final data as it's not needed
+        delete data.customEventType
 
         onSave(data)
         debounceAutoSave()
         remove()
+    })
+
+    // Add event listener for showing/hiding custom event type input
+    modalForm.addEventListener("change", (e) => {
+        if (e.target.id === "eventType") {
+            const customInput = modalForm.querySelector("#customEventType")
+            if (customInput) {
+                if (e.target.value === "other") {
+                    customInput.style.display = "block"
+                    customInput.focus()
+                } else {
+                    customInput.style.display = "none"
+                    customInput.value = "" // Clear the custom input when switching away from "other"
+                }
+            }
+        }
     })
 
     // remove this
@@ -92,6 +114,15 @@ export default function EventModal({ title = "Event Modal", onClose = ()=>{}, on
                             "Other",
                         ),
                     ),
+                    // Custom event type input that appears when "Other" is selected
+                    input({ 
+                        type: "text", 
+                        id: "customEventType", 
+                        name: "customEventType", 
+                        placeholder: "Enter custom event type...", 
+                        class: "form-input custom-event-type-input",
+                        style: "display: none; margin-top: 8px;"
+                    }),
                 ),
                 div({ class: "form-group" },
                     label({ for: "eventDate" },
@@ -163,6 +194,21 @@ export default function EventModal({ title = "Event Modal", onClose = ()=>{}, on
                     hiddenInput.value = value
                 }
                 // The rich text editor will be initialized with the value from the props
+            } else if (key === 'eventType') {
+                // Handle event type and custom event type
+                element.value = value
+                
+                // If the event type is not one of the predefined options, treat it as custom
+                const predefinedOptions = ['birth', 'baptism', 'christening', 'marriage', 'divorce', 'death', 'burial', 'census', 'residence', 'occupation', 'military', 'other']
+                if (!predefinedOptions.includes(value)) {
+                    // Set select to "other" and show custom input with the custom value
+                    element.value = 'other'
+                    const customInput = modalForm.querySelector('#customEventType')
+                    if (customInput) {
+                        customInput.value = value
+                        customInput.style.display = 'block'
+                    }
+                }
             } else {
                 element.value = value
             }

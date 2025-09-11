@@ -1058,6 +1058,24 @@ body {
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
+/* Custom Event Type Input Styling */
+.custom-event-type-input {
+    transition: all 0.3s ease;
+    border-color: #10b981;
+    background-color: #f0fdf4;
+}
+
+.custom-event-type-input:focus {
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    background-color: white;
+}
+
+.custom-event-type-input::placeholder {
+    color: #6b7280;
+    font-style: italic;
+}
+
 .form-help {
     display: block;
     margin-top: 6px;

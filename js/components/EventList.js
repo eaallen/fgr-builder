@@ -40,7 +40,7 @@ export default function EventList(eventState) {
             title: "✍️ Edit Event",
             data: {
                 eventType: event.type,
-                eventDate: formatDateToISO(event.date),
+                eventDate: event.date,
                 eventDescription: event.description,
                 eventPlace: event.place,
                 eventSources: event.sources
@@ -91,7 +91,7 @@ export default function EventList(eventState) {
     // Create event item element
     const createEventItem = (event) => {
         const eventType = event.type.charAt(0).toUpperCase() + event.type.slice(1)
-        const formattedDate = formatDateForDisplay(event.date)
+        const formattedDate =  formatDateForDisplay(event.date)
         const formattedSources = (event.sources || '')
         const hasSources = event.sources && event.sources.trim()
         const sourcesId = `sources-${event.id}`
@@ -136,12 +136,13 @@ export default function EventList(eventState) {
 
 
     const eventsList = van.derive(() => {
-        // Sort events by date (most recent first)
         const sortedEvents = [...events.val].sort((a, b) => {
             const dateA = new Date(a.date || '1900-01-01')
             const dateB = new Date(b.date || '1900-01-01')
             return dateA - dateB
         })
+
+        console.log("sortedEvents", sortedEvents)
 
         return div({ class: "events-list" },
             ...sortedEvents.map(event => createEventItem(event)),
@@ -198,7 +199,7 @@ export function EventListVersion2() {
             title: "✍️ Edit Event",
             data: {
                 eventType: event.type,
-                eventDate: formatDateToISO(event.date),
+                eventDate: event.date,
                 eventDescription: event.description,
                 eventPlace: event.place,
                 eventSources: event.sources

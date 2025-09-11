@@ -6,24 +6,36 @@
  * @returns {string} Date in "YYYY-MM-DD" format
  */
 export function convertToISODate(dateString) {
+    console.log("dateString---------->", dateString)
     if (!dateString || typeof dateString !== 'string') {
         throw new Error('Invalid date string provided');
     }
     
-    // Parse the date string
-    const date = new Date(dateString);
+    // Regex to capture month, day, and year from "Month DD, YYYY" format
+    const dateRegex = /^(\w+)\s+(\d{1,2}),\s+(\d{4})$/;
+    const match = dateString.match(dateRegex);
     
-    // Check if the date is valid
-    if (isNaN(date.getTime())) {
+    if (!match) {
         throw new Error('Invalid date format. Expected format: "Month DD, YYYY"');
     }
     
-    // Convert to YYYY-MM-DD format
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const [, monthName, day, year] = match;
     
-    return `${year}-${month}-${day}`;
+    // Convert month name to number
+    const monthNames = ["January", "February", "March", "April", "May", "June", 
+                       "July", "August", "September", "October", "November", "December"];
+    const monthIndex = monthNames.findIndex(name => 
+        name.toLowerCase() === monthName.toLowerCase()
+    );
+    
+    if (monthIndex === -1) {
+        throw new Error(`Invalid month name: ${monthName}`);
+    }
+    
+    const month = String(monthIndex + 1).padStart(2, '0');
+    const paddedDay = day.padStart(2, '0');
+    
+    return `${year}-${month}-${paddedDay}`;
 }
 
 /**
@@ -38,11 +50,14 @@ export function formatDateToISO(dateString) {
 
 
 export function formatDateForDisplay(dateString) {
-    if (!dateString) return ''
-    const date = new Date(dateString)
-    const day = date.getDate()
-    const month = date.toLocaleDateString('en-US', { month: 'long', timeZone: 'UTC' })
-    const year = date.getFullYear()
-    
-    return `${day} ${month} ${year}`
+        if (!dateString) return ''
+        return formatDateString(dateString)
+}
+
+
+function formatDateString(dateString) {
+    const [year, month, day] = dateString.split('-')
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    const monthName = monthNames[month - 1]
+    return `${monthName} ${day}, ${year}`
 }
