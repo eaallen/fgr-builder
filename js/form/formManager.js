@@ -81,6 +81,25 @@ export function collectFormData() {
     
     // Add metadata
     data.created = new Date().toISOString();
+
+    // add source numbers to events
+    let sourceNumber = 1
+    data.father.events.forEach(event => {
+        event.sourceNumber = sourceNumber
+        sourceNumber++
+    })
+    
+    data.mother.events.forEach(event => {
+        event.sourceNumber = sourceNumber
+        sourceNumber++
+    })
+
+    data.children.forEach(child => {
+        child.events.forEach(event => {
+            event.sourceNumber = sourceNumber
+            sourceNumber++
+        })
+    })
     
     // Clean up the data object (remove individual field names)
     delete data.fatherFullName;
@@ -154,14 +173,18 @@ export function clearForm() {
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('recordDate').value = today;
         
-        // Clear all events
-        const eventContainers = ['fatherEvents', 'motherEvents'];
-        eventContainers.forEach(containerId => {
-            document.getElementById(containerId).innerHTML = '';
-        });
+        // // Clear all events
+        // const eventContainers = ['fatherEvents', 'motherEvents'];
+        // eventContainers.forEach(containerId => {
+        //     document.getElementById(containerId).innerHTML = '';
+        // });
         
-        // Clear all children
-        document.getElementById('childrenList').innerHTML = '';
+        // // Clear all children
+        // document.getElementById('childrenList').innerHTML = '';
+
+        globalState.kids = []
+        globalState.fatherEvents = []
+        globalState.motherEvents = []
         
         // Clear any error messages
         const errorMessages = document.querySelectorAll('.error-message');

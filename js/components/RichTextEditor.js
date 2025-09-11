@@ -113,7 +113,7 @@ export default function RichTextEditor({
         console.log('Original HTML:', html)
         
         const tempDiv = document.createElement('div')
-        tempDiv.innerHTML = html
+        tempDiv.innerHTML = removeComments(html)
         
         // Remove unwanted elements but preserve links
         const unwantedTags = ['script', 'style', 'meta', 'link', 'title', 'head', 'body']
@@ -122,53 +122,13 @@ export default function RichTextEditor({
             elements.forEach(el => el.remove())
         })
         
-        // Process all elements to preserve links and clean formatting
-        const processElement = (element) => {
-            if (element.nodeType === Node.TEXT_NODE) {
-                return element.textContent
-            }
-            
-            if (element.nodeType === Node.ELEMENT_NODE) {
-                if (element.tagName === 'A') {
-                    // Preserve links with proper attributes
-                    const href = element.getAttribute('href')
-                    const text = element.textContent.trim()
-                    if (href && text) {
-                        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a>`
-                    } else if (href) {
-                        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${href}</a>`
-                    }
-                } else if (['P', 'DIV', 'SPAN', 'BR'].includes(element.tagName)) {
-                    // Handle block elements and line breaks
-                    if (element.tagName === 'BR') {
-                        return '<br>'
-                    }
-                    
-                    const childContent = Array.from(element.childNodes)
-                        .map(child => processElement(child))
-                        .join('')
-                    
-                    // Add line breaks for block elements if they have content
-                    if (['P', 'DIV'].includes(element.tagName) && childContent.trim()) {
-                        return childContent + '<br>'
-                    }
-                    return childContent
-                } else {
-                    // For other elements, just extract text content
-                    return element.textContent
-                }
-            }
-            
-            return ''
-        }
+    
+        removeStylesFromAllNodes(tempDiv)
+        removeNodesWithoutText(tempDiv)
+
+        console.log('Cleaned result:', tempDiv)
         
-        // Process all child nodes
-        const result = Array.from(tempDiv.childNodes)
-            .map(child => processElement(child))
-            .join('')
-        
-        console.log('Cleaned result:', result)
-        return result
+        return tempDiv.innerHTML
     }
 
     // Convert plain text URLs to HTML links
@@ -257,4 +217,68 @@ export default function RichTextEditor({
         // toolbar,
         editor
     )
+}
+
+
+// removeStylesFromAllNodes
+const removeStylesFromAllNodes = (node) => {
+    node.style = ""
+    for(const child of node.childNodes) {
+        removeStylesFromAllNodes(child)
+    }
+}
+
+/** 
+ * Remove all nodes that do not have a text node as a child 
+ * @param {Node} node - The node to remove
+ * */
+const removeNodesWithoutText = (node) => {
+    // console.log("node------>", node.nodeType)
+    // if (node.childNodes.length === 0) {
+    //     node.remove()
+    // }
+    // for(const child of node.childNodes) {
+    //     removeNodesWithoutText(child)
+    // }
+    for(const child of node.childNodes) {
+        console.log("child------>", child.textContent)
+        if(child.textContent === "") {
+            child.remove()
+        } else {
+            removeNodesWithoutText(child)
+        }
+    }
+}
+
+function removeComments(htmlString){
+    return htmlString.replace(/(?=<!--)([\s\S]*?)-->/g, '')
+}
+
+function keepOnlyTextNodesOrAnchorNodes(node){
+    // If it's a text node, keep it
+    if(node.nodeType === 3) {
+        return
+    }
+    
+    // If it's an anchor element, keep it
+    if(node.nodeType === 1 && node.tagName === 'A'){
+        return
+    }
+    
+    // If it's an element node that's not an anchor, remove it
+    if(node.nodeType === 1) {
+        // First, process all children before removing the node
+        const children = Array.from(node.childNodes)
+        for(const child of children){
+            keepOnlyTextNodesOrAnchorNodes(child)
+        }
+        // Replace the element with its children
+        const parent = node.parentNode
+        if(parent) {
+            while(node.firstChild) {
+                parent.insertBefore(node.firstChild, node)
+            }
+            parent.removeChild(node)
+        }
+    }
 }

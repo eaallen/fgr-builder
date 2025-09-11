@@ -8,9 +8,9 @@ import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, o
 // Import application modules
 import { initializeAuth } from './js/auth/auth.js';
 // import { setupAutoSave } from './js/firestore/firestore.js';
-import { initializeForm } from './js/form/formManager.js';
+import { clearForm, initializeForm } from './js/form/formManager.js';
 import { saveRecord } from './js/form/formManager.js';
-import { exportRecord, exportRecordAsPDF } from './js/utils/export.js';
+import { exportRecord, printFGR } from './js/utils/export.js';
 import { addChild, addSpouse, deleteSpouse, deleteChild } from './js/form/childrenManager.js';
 import {  closeEventModal } from './js/form/eventManager.js';
 import { debounceAutoSave } from './js/firestore/firestore.js';
@@ -76,6 +76,7 @@ window.addChild = addChild;
 window.addSpouse = addSpouse;
 window.deleteSpouse = deleteSpouse;
 window.deleteChild = deleteChild;
+window.clearForm = clearForm;
 
 
 // ==================== MAIN APPLICATION INITIALIZATION ====================
@@ -131,7 +132,7 @@ function setupKeyboardShortcuts() {
         // Ctrl+Shift+E to export as PDF
         if (event.ctrlKey && event.shiftKey && event.key === 'E') {
             event.preventDefault();
-            exportRecordAsPDF();
+            printFGR();
         }
     });
 }

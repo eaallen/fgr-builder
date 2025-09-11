@@ -3,7 +3,7 @@
 import { collectFormData } from '../form/formManager.js';
 import jsPDF from 'jspdf';
 import van from 'vanjs-core';
-import { a, br, div, h1, h2, h3, li, p, ul } from '../van/index.js';
+import { a, br, div, h1, h2, h3, li, p, span, sup, ul } from '../van/index.js';
 
 const { caption, table, tbody, td, tfoot, th, thead, tr } = van.tags
 
@@ -121,7 +121,7 @@ function validateForm() {
 }
 
 // Export record as PDF
-export function exportRecordAsPDF() {
+export async function exportRecordAsPDF() {
     if (!validateForm()) {
         alert('Please fill in all required fields before exporting.');
         return;
@@ -130,22 +130,13 @@ export function exportRecordAsPDF() {
     const formData = collectFormData();
 
     // Create HTML table
-    const htmlTable = createHTMLTable(formData);
-
-    document.body.appendChild(htmlTable);
 
     // Convert to PDF and download
-    convertHTMLToPDF(htmlTable, formData);
-}
-
-// Create HTML table from form data
-function createHTMLTable(data) {
-    console.log("::--------><---------::", buildHtml(data));
-    return buildHtml(data)
+    await convertHTMLToPDF(formData);
 }
 
 function buildHtml(data) {
-    return div({class: "pdf"},
+    return div({ class: "pdf", id: "to-print" },
         h1({ class: "family-header-for-pdf", id: "pdf-header" }, "Family of " + data.father.name + " and " + data.mother.name),
         p({ class: "subtitle" }, "Family Group Record"),
         p({ class: "" }, "Record Date: " + data.recordDate),
@@ -163,42 +154,9 @@ function buildHtml(data) {
         )),
         h2("Comments"),
         p(data.comments),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
-        br(),
+        PageBreakForPrinting(),
+        // Brs({ count: 100 }),
+        SourceDescription({ data }),
         a({ href: "#pdf-header" }, "Back to top"),
     )
 }
@@ -215,10 +173,23 @@ const TableOfEvents = ({ events }) => table({ class: "exported-table" },
         events.map(event => tr(
             td(event.type.toUpperCase()),
             td(event.date),
-            td(event.sources),
+            td({ id: sourceNumberId(event.sourceNumber) },
+
+                event.place && `[${event.place}]`,
+                event.description,
+                event.description &&
+                sup({ class: "source-number" },
+                    a({ href: sourceDescriptionHref(event.sourceNumber) },
+                        event.sourceNumber)),
+            ),
         ))
     )
 )
+
+const sourceNumberId = (sourceNumber) => `source-number-${sourceNumber}`
+const sourceNumberHref = (sourceNumber) => `#${sourceNumberId(sourceNumber)}`
+const sourceDescriptionId = (sourceNumber) => `source-description-${sourceNumber}`
+const sourceDescriptionHref = (sourceNumber) => `#${sourceDescriptionId(sourceNumber)}`
 
 const ParentInfo = ({ parent }) => div(
     div({ class: "" },
@@ -230,119 +201,46 @@ const ParentInfo = ({ parent }) => div(
     ),
 )
 
+const Br = ({ count = 1 }) => Array.from({ length: count }, () => br())
+
+const PageBreakForPrinting = () => div({ class: "page-break-here" })
+
+const SourceDescription = ({ data }) => {
+    const sources = []
+    const pushSource = (event) => { sources.push({ content: event.sources, sourceNumber: event.sourceNumber }) }
+    data.father.events.forEach(pushSource)
+    data.mother.events.forEach(pushSource)
+    data.children.forEach(child => { child.events.forEach(pushSource) })
+
+    return div({ class: "source-description-container" },
+        sources.map(source => {
+            const para = p({ id: sourceDescriptionId(source.sourceNumber) },
+                a({ href: sourceNumberHref(source.sourceNumber) }, sup(source.sourceNumber)),
+            )
+            const content = span({class: "source-content"})
+            content.innerHTML = source.content
+            para.appendChild(content)
+            return para
+        })
+
+
+    )
+}
+
+
 
 
 // Convert HTML to PDF and download
-function convertHTMLToPDF(htmlContent, formData) {
-    // Create a temporary div to hold the HTML content
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlContent;
-    tempDiv.style.position = 'absolute';
-    tempDiv.style.left = '-9999px';
-    tempDiv.style.top = '-9999px';
-    document.body.appendChild(tempDiv);
-
-    try {
-        // Create new PDF document
-        const pdf = new jsPDF();
-
-        
-        pdf.html(htmlContent, {
-            callback: function (doc) {
-
-                doc.save();
-            },
-            margin: [10, 10, 10, 10],
-            autoPaging: 'text',
-            x: 0,
-            y: 0,
-            width: 190, //target width in the PDF document
-            windowWidth: 675 //window width in CSS pixels
-        });
-        // // Get the content element
-        // const contentElement = tempDiv.firstElementChild;
-
-        // // Convert HTML to PDF using html2canvas (we'll need to add this dependency)
-        // // For now, let's use a simpler approach with text content
-        // const textContent = extractTextFromHTML(htmlContent);
-
-        // // Split text into lines that fit the page
-        // const pageHeight = pdf.internal.pageSize.height;
-        // const lineHeight = 6;
-        // const margin = 20;
-        // const maxWidth = pdf.internal.pageSize.width - (margin * 2);
-
-        // let yPosition = margin;
-        // const lines = textContent.split('\n');
-
-        // pdf.setFontSize(16);
-        // pdf.setFont('helvetica', 'bold');
-        // pdf.text('FAMILY GROUP RECORD', maxWidth / 2, yPosition, { align: 'center' });
-        // yPosition += 15;
-
-        // pdf.setFontSize(10);
-        // pdf.setFont('helvetica', 'normal');
-
-        // lines.forEach(line => {
-        //     if (yPosition > pageHeight - margin) {
-        //         pdf.addPage();
-        //         yPosition = margin;
-        //     }
-
-        //     if (line.trim()) {
-        //         // Split long lines
-        //         const splitLines = pdf.splitTextToSize(line, maxWidth);
-        //         splitLines.forEach(splitLine => {
-        //             if (yPosition > pageHeight - margin) {
-        //                 pdf.addPage();
-        //                 yPosition = margin;
-        //             }
-        //             pdf.text(splitLine, margin, yPosition);
-        //             yPosition += lineHeight;
-        //         });
-        //     } else {
-        //         yPosition += lineHeight;
-        //     }
-        // });
-
-        // // Generate filename
-        // const filename = `FamilyGroupRecord_${formData.father.name}_${formData.mother.name}_${new Date().toISOString().split('T')[0]}.pdf`;
-
-        // // Download the PDF
-        // pdf.save(filename);
-
-    } catch (error) {
-        console.error('Error generating PDF:', error);
-        alert('Error generating PDF. Please try again.');
-    } finally {
-        // Clean up temporary element
-        document.body.removeChild(tempDiv);
-    }
+export async function printFGR() {
+    const formData = collectFormData();
+    const htmlTable = buildHtml(formData);
+    document.body.appendChild(htmlTable);
+    print()
+    // document.body.removeChild(htmlTable);
 }
 
-// Extract text content from HTML for PDF generation
-function extractTextFromHTML(html) {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
-
-    // Remove script and style elements
-    const scripts = tempDiv.querySelectorAll('script, style');
-    scripts.forEach(script => script.remove());
-
-    // Get text content and clean it up
-    let text = tempDiv.textContent || tempDiv.innerText || '';
-
-    // Clean up whitespace
-    text = text.replace(/\s+/g, ' ').trim();
-
-    // Add some formatting
-    text = text.replace(/(FAMILY GROUP RECORD)/g, '\n\n$1\n');
-    text = text.replace(/(FATHER:|MOTHER:|CHILDREN|PREPARER|COMMENTS)/g, '\n\n$1');
-    text = text.replace(/(Record Date:|Family of:|Parents:|Events:|Name:|Address:|Email:)/g, '\n$1');
-
-    return text;
-}
 
 // Export functions that need to be available globally
 window.exportRecord = exportRecord;
 window.exportRecordAsPDF = exportRecordAsPDF;
+window.printFGR = printFGR;

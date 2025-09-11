@@ -10,6 +10,7 @@
     <link rel="apple-touch-icon" href="favicon.svg">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.min.css">
     <script>
         // setup global variables
         window.autoSaveTimeout = null;
@@ -149,10 +150,8 @@
 
             <!-- Action Buttons -->
             <div class="action-buttons">
-                <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
-                <button type="button" class="btn btn-primary" onclick="exportRecord()">Export as Text</button>
-                <button type="button" class="btn btn-info" onclick="exportRecordAsPDF()">Export as PDF</button>
-                <button type="button" class="btn btn-success" onclick="saveRecord()">Save Record</button>
+                <button type="button" class="btn btn-secondary" onclick="clearForm()"><i class="fas fa-trash"></i> Clear Form</button>
+                <button type="button" class="btn btn-info" onclick="printFGR()"><i class="fas fa-print"></i> Print or Download PDF <i class="fas fa-file-pdf"></i></button>
             </div>
         </form>
     </div>

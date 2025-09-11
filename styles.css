@@ -260,7 +260,10 @@ body {
 }
 
 /* Section Styles */
-.person-section, .children-section, .preparer-section, .comments-section {
+.person-section,
+.children-section,
+.preparer-section,
+.comments-section {
     background: white;
     border: 2px solid #e2e8f0;
     border-radius: 12px;
@@ -269,7 +272,10 @@ body {
     transition: all 0.2s ease;
 }
 
-.person-section:hover, .children-section:hover, .preparer-section:hover, .comments-section:hover {
+.person-section:hover,
+.children-section:hover,
+.preparer-section:hover,
+.comments-section:hover {
     border-color: #c7d2fe;
     box-shadow: 0 4px 12px rgba(79, 70, 229, 0.05);
 }
@@ -973,6 +979,7 @@ body {
         opacity: 0;
         transform: translateY(-50px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1108,87 +1115,87 @@ button:disabled:hover,
         margin: 10px;
         border-radius: 12px;
     }
-    
+
     .header {
         padding: 30px 20px;
     }
-    
+
     .header-content {
         flex-direction: column;
         gap: 20px;
         text-align: center;
     }
-    
+
     .header-text {
         text-align: center;
     }
-    
+
     .header h1 {
         font-size: 2rem;
     }
-    
+
     .auth-section {
         justify-content: center;
     }
-    
+
     .form {
         padding: 20px;
     }
-    
+
     .person-info {
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    
+
     .family-names {
         flex-direction: column;
         gap: 15px;
     }
-    
+
     .name-input {
         min-width: 100%;
     }
-    
+
     .event-item {
         padding: 15px;
     }
-    
+
     .event-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 5px;
     }
-    
+
     .event-actions {
         align-self: flex-end;
     }
-    
+
     .child-item {
         flex-direction: column;
         gap: 20px;
     }
-    
+
     .action-buttons {
         flex-direction: column;
         align-items: center;
     }
-    
+
     .btn {
         width: 100%;
         max-width: 200px;
         justify-content: center;
     }
-    
+
     .modal-content {
         width: 95%;
         margin: 5% auto;
         max-height: 85vh;
     }
-    
+
     .modal-body {
         padding: 20px;
     }
-    
+
     .modal-footer {
         padding: 15px 20px;
         flex-direction: column;
@@ -1199,33 +1206,36 @@ button:disabled:hover,
     body {
         padding: 10px;
     }
-    
+
     .header h1 {
         font-size: 1.8rem;
     }
-    
+
     .subtitle {
         font-size: 1rem;
     }
-    
-    .person-section, .children-section, .preparer-section, .comments-section {
+
+    .person-section,
+    .children-section,
+    .preparer-section,
+    .comments-section {
         padding: 20px;
     }
-    
+
     .section-title {
         font-size: 1.2rem;
     }
-    
+
     .modal-content {
         width: 98%;
         margin: 2% auto;
         max-height: 90vh;
     }
-    
+
     .modal-body {
         padding: 15px;
     }
-    
+
     .modal-footer {
         padding: 12px 15px;
     }
@@ -1250,6 +1260,63 @@ button:disabled:hover,
     color: #374151;
 }
 
-.pdf ul, .pdf ol {
+.pdf ul,
+.pdf ol {
     padding-left: 1rem;
+}
+
+
+@media print {
+    body *:not(#to-print, #to-print *) {
+        display: none;
+    }
+
+
+    #to-print,
+    #to-print * {
+        visibility: visible;
+    }
+
+    #to-print {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: auto;
+        height: 99%;
+    }
+
+    .page-break-here {
+        page-break-after: always;
+    }
+
+    .source-description-container {
+        overflow-wrap: break-word;
+    }
+
+    .source-content * {
+        display: inline;
+        font-weight: normal;
+        font-size: 1rem;
+        text-decoration: none;
+        font-style: normal;
+        overflow-wrap: break-word;
+    }
+
+    a {
+        text-decoration: none;
+        color: #4f46e5;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+
+        word-break: break-word;
+
+        /* Adds a hyphen where the word breaks, if supported (No Blink) */
+        hyphens: auto;
+    }
+
+    a:hover {
+        color: #1aa5bd;
+    }
+
 }
