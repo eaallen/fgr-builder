@@ -45,7 +45,6 @@ function formatRecordAsText(data) {
         content += `  Events:\n`;
         data.father.events.forEach(event => {
             content += `    ${event.type.toUpperCase()}: ${event.date}`;
-            if (event.place) content += ` | ${event.place}`;
             if (event.description) content += ` | ${event.description}`;
             if (event.sources) content += ` | Sources: ${event.sources}`;
             content += `\n`;
@@ -61,7 +60,6 @@ function formatRecordAsText(data) {
         content += `  Events:\n`;
         data.mother.events.forEach(event => {
             content += `    ${event.type.toUpperCase()}: ${event.date}`;
-            if (event.place) content += ` | ${event.place}`;
             if (event.description) content += ` | ${event.description}`;
             if (event.sources) content += ` | Sources: ${event.sources}`;
             content += `\n`;
@@ -175,7 +173,6 @@ const TableOfEvents = ({ events }) => table({ class: "exported-table" },
             td(event.date),
             td({ id: sourceNumberId(event.sourceNumber) },
 
-                event.place && `[${event.place}]`,
                 event.description,
                 event.description &&
                 sup({ class: "source-number" },
@@ -213,6 +210,7 @@ const SourceDescription = ({ data }) => {
     data.children.forEach(child => { child.events.forEach(pushSource) })
 
     return div({ class: "source-description-container" },
+        h2("Sources"),
         sources.map(source => {
             const para = p({ id: sourceDescriptionId(source.sourceNumber) },
                 a({ href: sourceNumberHref(source.sourceNumber) }, sup(source.sourceNumber)),
