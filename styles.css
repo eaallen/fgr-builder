@@ -14,6 +14,25 @@ body {
     padding: 20px;
 }
 
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -253,7 +272,7 @@ body {
 }
 
 .form.blurred {
-    filter: blur(20px) grayscale(100%) ;
+    filter: blur(10px) grayscale(100%) ;
     pointer-events: none;
     user-select: none;
 }
@@ -912,23 +931,6 @@ body {
     flex-wrap: wrap;
 }
 
-.btn {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
 
 .btn-primary {
     background: #4f46e5;

@@ -112,7 +112,6 @@ export function updateGuestUI() {
     // Update logout button to show "Switch to Google" instead
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
-        logoutBtn.textContent = 'Switch to Google';
         logoutBtn.onclick = () => {
             // Clear guest mode from localStorage and reset
             localStorage.removeItem(GUEST_MODE_KEY);
