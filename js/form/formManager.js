@@ -11,19 +11,19 @@ import ChildList from '../components/ChildList.js';
 
 const formHasBeenPopulated = van.state(false)
 const globalState = vanX.reactive({ kids: [], fatherEvents: [], motherEvents: [] })
-const {fatherEvents, motherEvents} = vanX.stateFields(globalState)
+const { fatherEvents, motherEvents } = vanX.stateFields(globalState)
 
-van.derive(() =>{ 
+van.derive(() => {
 
-    
-    if(!formHasBeenPopulated.val) {
+
+    if (!formHasBeenPopulated.val) {
         return // do not start auto saving until the form has been populated
     }
-    
-    if(fatherEvents.oldVal === fatherEvents.val && motherEvents.oldVal === motherEvents.val && globalState.kids.length === 0) {
+
+    if (fatherEvents.oldVal === fatherEvents.val && motherEvents.oldVal === motherEvents.val && globalState.kids.length === 0) {
         return // not going to auto save if out states are all empty
     }
-    
+
     const formData = collectFormData()
     console.log("formData", formData)
     debounceAutoSave()
@@ -42,20 +42,20 @@ export function initializeForm() {
     // add events list
     van.add(document.getElementById('fatherEvents'), EventList(fatherEvents))
     van.add(document.getElementById('motherEvents'), EventList(motherEvents))
-    van.add(document.getElementById('childrenList'), ChildList({state: globalState}))
+    van.add(document.getElementById('childrenList'), ChildList({ state: globalState }))
 }
 
 // Collect form data using FormData
 export function collectFormData() {
     const form = document.getElementById('familyGroupForm');
     const formData = new FormData(form);
-    
+
     // Convert FormData to a plain object
     const data = {};
     for (let [key, value] of formData.entries()) {
         data[key] = value;
     }
-    
+
     // Add dynamic data that's not in the form
     data.father = {
         name: data.fatherFullName || '',
@@ -63,14 +63,14 @@ export function collectFormData() {
         mother: data.fatherMother || '',
         events: fatherEvents.val
     };
-    
+
     data.mother = {
         name: data.motherFullName || '',
         father: data.motherFather || '',
         mother: data.motherMother || '',
         events: motherEvents.val
     };
-    
+
     data.children = globalState.kids;
 
     data.preparer = {
@@ -78,7 +78,7 @@ export function collectFormData() {
         address: data.preparerAddress || '',
         email: data.preparerEmail || ''
     };
-    
+
     // Add metadata
     data.created = new Date().toISOString();
 
@@ -88,7 +88,7 @@ export function collectFormData() {
         event.sourceNumber = sourceNumber
         sourceNumber++
     })
-    
+
     data.mother.events.forEach(event => {
         event.sourceNumber = sourceNumber
         sourceNumber++
@@ -100,7 +100,7 @@ export function collectFormData() {
             sourceNumber++
         })
     })
-    
+
     // Clean up the data object (remove individual field names)
     delete data.fatherFullName;
     delete data.fatherFather;
@@ -111,7 +111,7 @@ export function collectFormData() {
     delete data.preparerName;
     delete data.preparerAddress;
     delete data.preparerEmail;
-    
+
     return data;
 }
 
@@ -123,9 +123,9 @@ export function validateForm() {
         'preparerName',
         'preparerEmail'
     ];
-    
+
     let isValid = true;
-    
+
     requiredFields.forEach(fieldId => {
         const field = document.getElementById(fieldId);
         if (!field.value.trim()) {
@@ -133,20 +133,20 @@ export function validateForm() {
             isValid = false;
         }
     });
-    
+
     return isValid;
 }
 
 // Show field error
 function showFieldError(field, message) {
     field.classList.add('error');
-    
+
     // Remove existing error message
     const existingError = field.parentNode.querySelector('.error-message');
     if (existingError) {
         existingError.remove();
     }
-    
+
     // Add new error message
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message';
@@ -154,46 +154,42 @@ function showFieldError(field, message) {
     errorDiv.style.color = '#ef4444';
     errorDiv.style.fontSize = '0.875rem';
     errorDiv.style.marginTop = '4px';
-    
+
     field.parentNode.appendChild(errorDiv);
 }
 
 // Clear form
-export function clearForm() {
-    if (confirm('Are you sure you want to clear all form data? This action cannot be undone.')) {
-        // Clear all input fields
-        const inputs = document.querySelectorAll('input, textarea, select');
-        inputs.forEach(input => {
-            if (input.type !== 'date' || input.id === 'recordDate') {
-                input.value = '';
-            }
-        });
-        
-        // Set today's date as default
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('recordDate').value = today;
-        
-        // // Clear all events
-        // const eventContainers = ['fatherEvents', 'motherEvents'];
-        // eventContainers.forEach(containerId => {
-        //     document.getElementById(containerId).innerHTML = '';
-        // });
-        
-        // // Clear all children
-        // document.getElementById('childrenList').innerHTML = '';
-
-        globalState.kids = []
-        globalState.fatherEvents = []
-        globalState.motherEvents = []
-        
-        // Clear any error messages
-        const errorMessages = document.querySelectorAll('.error-message');
-        errorMessages.forEach(error => error.remove());
-        
-        // Remove error styling
-        const errorFields = document.querySelectorAll('.error');
-        errorFields.forEach(field => field.classList.remove('error'));
+export function clearForm(showConfirmation = true) {
+    if (showConfirmation) {
+        if (!confirm('Are you sure you want to clear all form data? This action cannot be undone.')) {
+            return
+        }
     }
+
+
+    // Clear all input fields
+    const inputs = document.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+        if (input.type !== 'date' || input.id === 'recordDate') {
+            input.value = '';
+        }
+    });
+
+    // Set today's date as default
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('recordDate').value = today;
+
+    globalState.kids = []
+    globalState.fatherEvents = []
+    globalState.motherEvents = []
+
+    // Clear any error messages
+    const errorMessages = document.querySelectorAll('.error-message');
+    errorMessages.forEach(error => error.remove());
+
+    // Remove error styling
+    const errorFields = document.querySelectorAll('.error');
+    errorFields.forEach(field => field.classList.remove('error'));
 }
 
 // Save record
@@ -203,13 +199,13 @@ export async function saveRecord() {
         alert('Please fill in all required fields before saving.');
         return;
     }
-    
+
     // Collect form data
     const formData = collectFormData();
-    
+
     // Save to Firestore
     const success = await saveToFirestore(formData);
-    
+
     if (success) {
         alert('Record saved successfully!');
     } else {
@@ -222,9 +218,9 @@ export function populateForm(data) {
     formHasBeenPopulated.val = true
     if (!data) return;
 
-    if(data.fatherName) document.getElementById('fatherName').value = data.fatherName
-    if(data.motherName) document.getElementById('motherName').value = data.motherName
-    
+    if (data.fatherName) document.getElementById('fatherName').value = data.fatherName
+    if (data.motherName) document.getElementById('motherName').value = data.motherName
+
     // Populate basic fields
     if (data.recordDate) document.getElementById('recordDate').value = data.recordDate;
     if (data.father) {
@@ -256,11 +252,11 @@ export function populateForm(data) {
 function collectChildren() {
     const children = [];
     const childrenList = document.getElementById('childrenList');
-    
+
     Array.from(childrenList.children).forEach(childItem => {
         const childName = childItem.querySelector('.child-name-input').value;
         const spouses = [];
-        
+
         const spousesList = childItem.querySelector('.spouses-list');
         Array.from(spousesList.children).forEach(spouseItem => {
             const spouseName = spouseItem.querySelector('.spouse-input').value;
@@ -268,7 +264,7 @@ function collectChildren() {
                 spouses.push(spouseName);
             }
         });
-        
+
         if (childName.trim()) {
             children.push({
                 name: childName,
@@ -276,7 +272,7 @@ function collectChildren() {
             });
         }
     });
-    
+
     return children;
 }
 
@@ -284,7 +280,7 @@ function collectChildren() {
 function populateChildren(children) {
     const childrenList = document.getElementById('childrenList');
     childrenList.innerHTML = '';
-    
+
     children.forEach(childData => {
         const childId = generateChildId();
         const childDiv = document.createElement('div');

@@ -4,6 +4,7 @@ import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../main.js';
 import { getCurrentUser } from '../auth/auth.js';
 import { collectFormData, populateForm } from '../form/formManager.js';
+import { isInGuestMode } from '../components/LoginWithGoogleOrContinueAsGuest.js';
 
 let isAutoSaving = false;
 
@@ -11,8 +12,8 @@ let isAutoSaving = false;
 export async function saveToFirestore(data) {
     const currentUser = getCurrentUser();
 
-    if (!currentUser) {
-        console.log('No user signed in, saving to localStorage instead');
+    if (!currentUser || isInGuestMode()) {
+        console.log('No user signed in or in guest mode, saving to localStorage instead');
         return saveToLocalStorage(data);
     }
 
@@ -39,8 +40,8 @@ export async function saveToFirestore(data) {
 export async function loadFromFirestore() {
     const currentUser = getCurrentUser();
 
-    if (!currentUser) {
-        console.log('No user signed in, loading from localStorage instead');
+    if (!currentUser || isInGuestMode()) {
+        console.log('No user signed in or in guest mode, loading from localStorage instead');
         return loadFromLocalStorage();
     }
 
@@ -70,7 +71,12 @@ export async function loadFromFirestore() {
 export function saveToLocalStorage(data) {
     try {
         const recordId = 'fgr_' + Date.now();
-        localStorage.setItem(recordId, JSON.stringify(data));
+        const recordWithTimestamp = {
+            ...data,
+            created: new Date().toISOString(),
+            lastUpdated: new Date().toISOString()
+        };
+        localStorage.setItem(recordId, JSON.stringify(recordWithTimestamp));
         console.log('Data saved to localStorage');
         return true;
     } catch (error) {
@@ -88,12 +94,17 @@ export function loadFromLocalStorage() {
 
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
-            if (key.startsWith('fgr_')) {
-                const record = JSON.parse(localStorage.getItem(key));
-                const recordTime = new Date(record.created || 0).getTime();
-                if (recordTime > latestTime) {
-                    latestTime = recordTime;
-                    latestRecord = record;
+            if (key.startsWith('fgr_') && key !== 'fgr_auth_choice' && key !== 'fgr_guest_mode') {
+                try {
+                    const record = JSON.parse(localStorage.getItem(key));
+                    const recordTime = new Date(record.created || 0).getTime();
+                    if (recordTime > latestTime) {
+                        latestTime = recordTime;
+                        latestRecord = record;
+                    }
+                } catch (error) {
+                    // Skip items that aren't valid JSON (like our auth choice keys)
+                    console.log('Skipping non-JSON localStorage item:', key);
                 }
             }
         }
@@ -115,7 +126,7 @@ export function loadFromLocalStorage() {
 // Load user data
 export async function loadUserData() {
     const currentUser = getCurrentUser();
-    if (!currentUser) return;
+    if (!currentUser && !isInGuestMode()) return;
 
     try {
         await loadFromFirestore();
@@ -126,12 +137,6 @@ export async function loadUserData() {
 
 // ==================== AUTO-SAVE FUNCTIONALITY ====================
 
-// Set up auto-save
-// export function setupAutoSave() {
-//     const form = document.getElementById('familyGroupForm');
-//     form.addEventListener('input', debounceAutoSave);
-//     form.addEventListener('change', debounceAutoSave);
-// }
 
 // Debounced auto-save
 export function debounceAutoSave() {
@@ -145,7 +150,7 @@ export function debounceAutoSave() {
 // Auto-save function
 export async function autoSave() {
     const currentUser = getCurrentUser();
-    if (!currentUser) { return }
+    if (!currentUser && !isInGuestMode()) { return }
     if (isAutoSaving) return;
 
     isAutoSaving = true;

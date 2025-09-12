@@ -118,20 +118,6 @@ function validateForm() {
     return isValid;
 }
 
-// Export record as PDF
-export async function exportRecordAsPDF() {
-    if (!validateForm()) {
-        alert('Please fill in all required fields before exporting.');
-        return;
-    }
-
-    const formData = collectFormData();
-
-    // Create HTML table
-
-    // Convert to PDF and download
-    await convertHTMLToPDF(formData);
-}
 
 function buildHtml(data) {
     return div({ class: "pdf", id: "to-print" },
@@ -234,11 +220,10 @@ export async function printFGR() {
     const htmlTable = buildHtml(formData);
     document.body.appendChild(htmlTable);
     print()
-    // document.body.removeChild(htmlTable);
+    document.body.removeChild(htmlTable);
 }
 
 
 // Export functions that need to be available globally
 window.exportRecord = exportRecord;
-window.exportRecordAsPDF = exportRecordAsPDF;
 window.printFGR = printFGR;

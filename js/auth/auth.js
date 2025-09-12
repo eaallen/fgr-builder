@@ -2,6 +2,7 @@
 
 import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
 import { auth, provider } from '../../main.js';
+import loginSection, { isInGuestMode, setGuestMode, updateGuestUI, loadGuestData } from '../components/LoginWithGoogleOrContinueAsGuest.js';
 
 let currentUser = null;
 
@@ -10,8 +11,16 @@ export function initializeAuth() {
     // Listen for authentication state changes
     onAuthStateChanged(auth, (user) => {
         currentUser = user;
+
+        console.log('state changed', user);
+
+        // If user signs in, exit guest mode
+        if (user) {
+            setGuestMode(false);
+        }
+
         updateAuthUI(user);
-        
+
         if (user) {
             console.log('User signed in:', user.displayName);
             // Import and call loadUserData dynamically to avoid circular imports
@@ -20,15 +29,22 @@ export function initializeAuth() {
             });
         } else {
             console.log('User signed out');
+            // Check if user was in guest mode before signing out
+            const wasInGuestMode = localStorage.getItem('fgr_guest_mode') === 'true';
+            if (wasInGuestMode) {
+                // Restore guest mode
+                setGuestMode(true);
+                updateGuestUI();
+                loadGuestData();
+            }
             // Import and call clearForm dynamically
             // import('../form/formManager.js').then(module => {
             //     module.clearForm();
             // });
         }
     });
-    
-    // Set up login/logout button event listeners
-    document.getElementById('loginBtn').addEventListener('click', signInWithGoogle);
+
+    // Set up logout button event listener (for when user is signed in)
     document.getElementById('logoutBtn').addEventListener('click', signOutUser);
 }
 
@@ -54,15 +70,17 @@ export async function signOutUser() {
     }
 }
 
+
 // Update authentication UI
 export function updateAuthUI(user) {
     const userInfo = document.getElementById('userInfo');
-    const loginSection = document.getElementById('loginSection');
     const userName = document.getElementById('userName');
     const form = document.getElementById('familyGroupForm');
-    
+
     if (user) {
         // User is signed in
+        console.log("we have a user");
+        
         userInfo.style.display = 'flex';
         loginSection.style.display = 'none';
         userName.textContent = user.displayName || user.email;
@@ -70,13 +88,18 @@ export function updateAuthUI(user) {
         if (form) {
             form.classList.remove('blurred');
         }
+    } else if (isInGuestMode()) {
+        console.log("we are in guest mode");
+        // User is in guest mode - UI is handled by the guest component
+        return;
     } else {
-        // User is signed out
+        console.log("we are signed out");
+        // User is signed out and not in guest mode
         userInfo.style.display = 'none';
-        loginSection.style.display = 'block';
         // Add blur to form
         if (form) {
             form.classList.add('blurred');
+            loginSection.style.display = 'block';
         }
     }
 }
