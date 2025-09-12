@@ -148,7 +148,6 @@ export default function EventModal({ title = "Event Modal", onClose = ()=>{}, on
                         value: data.eventSources || "",
                         onchange: (content) => {
                             // Store the content for form submission
-                            console.log("content------>", content)
                             const hiddenInput = document.getElementById('eventSourcesHidden')
                             if (hiddenInput) {
                                 hiddenInput.value = content
