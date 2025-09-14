@@ -83,9 +83,15 @@ window.clearForm = clearForm;
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
-    // Set today's date as default
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('recordDate').value = today;
+    // Set today's date as default in genealogy format
+    const today = new Date();
+    const day = today.getDate();
+    const monthNames = ["January", "February", "March", "April", "May", "June", 
+                       "July", "August", "September", "October", "November", "December"];
+    const monthName = monthNames[today.getMonth()];
+    const year = today.getFullYear();
+    const formattedDate = `${day} ${monthName} ${year}`;
+    document.getElementById('recordDate').value = formattedDate;
     
     // Initialize form
     initializeForm();

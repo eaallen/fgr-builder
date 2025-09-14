@@ -91,7 +91,7 @@ export default function EventList(eventState) {
     // Create event item element
     const createEventItem = (event) => {
         const eventType = event.type.charAt(0).toUpperCase() + event.type.slice(1)
-        const formattedDate =  formatDateForDisplay(event.date)
+        const formattedDate =  event.date
         const formattedSources = (event.sources || '')
         const hasSources = event.sources && event.sources.trim()
         const sourcesId = `sources-${event.id}`
@@ -250,7 +250,7 @@ export function EventListVersion2() {
     // Create event item element
     const createEventItem = (event) => {
         const eventType = event.type.charAt(0).toUpperCase() + event.type.slice(1)
-        const formattedDate = formatDateForDisplay(event.date)
+        const formattedDate = event.date
         const formattedSources = (event.sources || '')
         const hasSources = event.sources && event.sources.trim()
         const sourcesId = `sources-${event.id}`
