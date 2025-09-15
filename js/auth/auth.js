@@ -3,6 +3,7 @@
 import { onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
 import { auth, provider } from '../../main.js';
 import loginSection, { isInGuestMode, setGuestMode, updateGuestUI, loadGuestData } from '../components/LoginWithGoogleOrContinueAsGuest.js';
+import { loadUserData } from '../firestore/firestore.js';
 
 let currentUser = null;
 
@@ -24,9 +25,8 @@ export function initializeAuth() {
         if (user) {
             console.log('User signed in:', user.displayName);
             // Import and call loadUserData dynamically to avoid circular imports
-            import('../firestore/firestore.js').then(module => {
-                module.loadUserData();
-            });
+            loadUserData();
+            
         } else {
             console.log('User signed out');
             // Check if user was in guest mode before signing out
@@ -35,12 +35,9 @@ export function initializeAuth() {
                 // Restore guest mode
                 setGuestMode(true);
                 updateGuestUI();
-                loadGuestData();
+                // loadGuestData();
+                loadUserData()
             }
-            // Import and call clearForm dynamically
-            // import('../form/formManager.js').then(module => {
-            //     module.clearForm();
-            // });
         }
     });
 

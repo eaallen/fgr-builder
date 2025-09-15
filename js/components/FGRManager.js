@@ -126,6 +126,7 @@ export function showFGRManager() {
 
 
 export function populateFormWithNewFGR() {
+    console.log("populateFormWithNewFGR")
     populateForm({
         recordId: generateUUID(),
         recordDate: new Date().toLocaleDateString(),

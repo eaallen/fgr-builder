@@ -6,50 +6,37 @@ import { getCurrentUser } from '../auth/auth.js';
 import { collectFormData, populateForm } from '../form/formManager.js';
 import { isInGuestMode } from '../components/LoginWithGoogleOrContinueAsGuest.js';
 import { populateFormWithNewFGR } from '../components/FGRManager.js';
+import { fgrStorage } from '../odin/index.js';
 
 let isAutoSaving = false;
 
 // Save data to Firestore
 export async function saveToFirestore(data) {
-    const currentUser = getCurrentUser();
-
-    if (!currentUser || isInGuestMode()) {
-        console.log('No user signed in or in guest mode, saving to localStorage instead');
-        return saveToLocalStorage(data);
-    }
-
     try {
-        const userDocRef = doc(db, 'users', currentUser.uid);
-
         const userData = {
             ...data,
             lastUpdated: new Date().toISOString(),
-            userId: currentUser.uid
         };
 
         // await setDoc(userDocRef, userData, { merge: true });
         await saveFGRToFirestore(userData)
-        console.log('Data saved to Firestore successfully');
+        console.log('Data saved to storage successfully');
         return true;
     } catch (error) {
-        console.error('Error saving to Firestore:', error);
+        console.error('Error saving data to storage:', error);
         // Fallback to localStorage
-        return saveToLocalStorage(data);
+        // return saveToLocalStorage(data);
     }
 }
 
 // Load data from Firestore
 export async function loadFromFirestore() {
-    const currentUser = getCurrentUser();
-
-    if (!currentUser || isInGuestMode()) {
-        console.log('No user signed in or in guest mode, loading from localStorage instead');
-        return loadFromLocalStorage();
-    }
-
+    console.log("loadFromFirestore")
     try {
 
         const fgrs = await loadFGRsFromFirestore()
+
+        console.log("2 ---->", fgrs)
 
         if (fgrs.length > 0) {
             const data = fgrs.reduce((a,b)=> a.lastUpdated > b.lastUpdated ? a : b)
@@ -62,7 +49,7 @@ export async function loadFromFirestore() {
             populateFormWithNewFGR()
         }
     } catch (error) {
-        console.error('Error loading from Firestore:', error);
+        console.error('Error loading data from storage', error);
         // Fallback to localStorage
         return loadFromLocalStorage();
     }
@@ -71,7 +58,9 @@ export async function loadFromFirestore() {
 export async function loadFGRsFromFirestore() {
     const currentUser = getCurrentUser();
     if(!currentUser) {
-        throw new Error('No user signed in');
+        const oldRecords = fgrStorage.get.fgr_records()
+        return Object.values(oldRecords)
+        // throw new Error('No user signed in');
     }
     const collectionSnapshot = collection(db, 'users', currentUser.uid, 'fgr_records')
     const docs = await getDocs(collectionSnapshot)
@@ -81,9 +70,14 @@ export async function loadFGRsFromFirestore() {
 
 export async function saveFGRToFirestore(data) {
     const currentUser = getCurrentUser();
-    if(!currentUser) {
-        throw new Error('No user signed in');
-    }
+    if (!currentUser || isInGuestMode()) {
+        console.log('No user signed in or in guest mode, saving to localStorage instead');
+        const oldRecords = fgrStorage.get.fgr_records()
+        oldRecords[data.recordId] = data
+        console.log("1 ---->", oldRecords)
+        fgrStorage.set.fgr_records(oldRecords)
+        return
+    }    
     const collectionSnapshot = collection(db, 'users', currentUser.uid, 'fgr_records')
     await setDoc(doc(collectionSnapshot, data.recordId), data, { merge: true })
 }
@@ -91,7 +85,10 @@ export async function saveFGRToFirestore(data) {
 export async function deleteFGRFromFirestore(recordId) {
     const currentUser = getCurrentUser();
     if(!currentUser) {
-        throw new Error('No user signed in');
+        const oldRecords = fgrStorage.get.fgr_records()
+        delete oldRecords[recordId]
+        fgrStorage.set.fgr_records(oldRecords)
+        return
     }
     const docRef = doc(db, 'users', currentUser.uid, 'fgr_records', recordId);
     await deleteDoc(docRef);
@@ -156,9 +153,6 @@ export function loadFromLocalStorage() {
 
 // Load user data
 export async function loadUserData() {
-    const currentUser = getCurrentUser();
-    if (!currentUser && !isInGuestMode()) return;
-
     try {
         await loadFromFirestore();
     } catch (error) {
