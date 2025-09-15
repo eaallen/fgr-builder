@@ -121,7 +121,7 @@ function validateForm() {
 
 function buildHtml(data) {
     return div({ class: "pdf", id: "to-print" },
-        h1({ class: "family-header-for-pdf", id: "pdf-header" }, "Family of " + data.father.name + " and " + data.mother.name),
+        h1({ class: "family-header-for-pdf", id: "pdf-header" }, "Family of " + data.fatherName + " and " + data.motherName),
         p({ class: "subtitle" }, "Family Group Record"),
         p({ class: "" }, "Record Date: " + data.recordDate),
         p({ class: "" }, "Prepared by: " + data.preparer.name),

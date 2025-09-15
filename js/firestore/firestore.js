@@ -48,8 +48,6 @@ export async function loadFromFirestore() {
     }
 
     try {
-        // const userDocRef = doc(db, 'users', currentUser.uid);
-        // const docSnap = await getDoc(userDocRef);
 
         const fgrs = await loadFGRsFromFirestore()
 

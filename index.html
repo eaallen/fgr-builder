@@ -48,6 +48,19 @@
                     <h1>Family Group Record Builder</h1>
                     <p class="subtitle">Create professional Family Group Records with ease!</p>
                 </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-outline" onclick="clearForm()"><i class="fas fa-trash"></i>
+                        Clear Form</button>
+                    <button type="button" class="btn btn-outline" onclick="printFGR()"><i class="fas fa-print"></i> Print
+                        or Download PDF <i class="fas fa-file-pdf"></i></button>
+                    <button type="button" class="btn btn-outline" onclick="showFGRManager()">
+                        <i class="fas fa-plus"></i>
+                        Record Manager
+                    </button>
+                </div>
+
             </div>
         </header>
         <div id="form-container">
@@ -65,7 +78,8 @@
                     </div>
                     <div class="record-date">
                         <label for="recordDate">Record Date:</label>
-                        <input type="text" id="recordDate" name="recordDate" class="date-input" placeholder="12 January, 2025">
+                        <input type="text" id="recordDate" name="recordDate" class="date-input"
+                            placeholder="12 January, 2025">
                     </div>
                 </div>
 
@@ -140,17 +154,6 @@
                         class="comments-textarea"></textarea>
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="action-buttons">
-                    <button type="button" class="btn btn-secondary" onclick="clearForm()"><i class="fas fa-trash"></i>
-                        Clear Form</button>
-                    <button type="button" class="btn btn-info" onclick="printFGR()"><i class="fas fa-print"></i> Print
-                        or Download PDF <i class="fas fa-file-pdf"></i></button>
-                    <button type="button" class="btn btn-primary" onclick="showFGRManager()">
-                        <i class="fas fa-chevron-down"></i> 
-                        FRG Record Manager
-                    </button>
-                </div>
             </form>
         </div>
 
