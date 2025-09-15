@@ -1,48 +1,157 @@
 import van from "vanjs-core"
 import RichTextEditor from './RichTextEditor.js'
 import { debounceAutoSave } from "../firestore/firestore.js"
+import Modal from './Modal.js'
 
 const { div, label, input, select, option, small, button, h3, span, textarea, form } = van.tags
 
 let modalIsShowing = false
 
 
-export default function EventModal({ title = "Event Modal", onClose = ()=>{}, onSave, data = {} }) {
+export default function EventModal({ title = "Event Modal", onClose = () => { }, onSave, data = {} }) {
     if (modalIsShowing) {
         return null
     }
     modalIsShowing = true
 
-    const modalForm = form({ class: "modal" })
-
     const remove = () => {
-        modalForm.remove()
+        modal.remove()
         onClose()
         modalIsShowing = false
     }
 
 
-    modalForm.addEventListener("submit", (e) => {
-        e.preventDefault()
-        const formData = new FormData(modalForm)
+    const modalForm = form(
+        div({ class: "form-group" },
+            label({ for: "eventType" },
+                "Event Type:",
+            ),
+            select({ id: "eventType", name: "eventType", class: "form-input", value: data.eventType || "birth" },
+                option({ value: "birth" },
+                    "Birth",
+                ),
+                option({ value: "baptism" },
+                    "Baptism",
+                ),
+                option({ value: "christening" },
+                    "Christening",
+                ),
+                option({ value: "marriage" },
+                    "Marriage",
+                ),
+                option({ value: "divorce" },
+                    "Divorce",
+                ),
+                option({ value: "death" },
+                    "Death",
+                ),
+                option({ value: "burial" },
+                    "Burial",
+                ),
+                option({ value: "census" },
+                    "Census",
+                ),
+                option({ value: "residence" },
+                    "Residence",
+                ),
+                option({ value: "occupation" },
+                    "Occupation",
+                ),
+                option({ value: "military" },
+                    "Military",
+                ),
+                option({ value: "other" },
+                    "Other",
+                ),
+            ),
+            // Custom event type input that appears when "Other" is selected
+            input({
+                type: "text",
+                id: "customEventType",
+                name: "customEventType",
+                placeholder: "Enter custom event type...",
+                class: "form-input custom-event-type-input",
+                style: "display: none; margin-top: 8px;"
+            }),
+        ),
+        div({ class: "form-group" },
+            label({ for: "eventDate" },
+                "Date:",
+            ),
+            input({ type: "text", id: "eventDate", name: "eventDate", class: "form-input", placeholder: "12 January, 2025", required: true }),
+            small({ class: "form-help" }, "Enter date in format: 12 January 2025, January 2025, or 2025"),
+        ),
+        div({ class: "form-group" },
+            label({ for: "eventDescription" },
+                "Description:",
+            ),
+            input({ type: "text", id: "eventDescription", name: "eventDescription", placeholder: "Additional details", class: "form-input" }),
+        ),
+        div({ class: "form-group" },
+            label({ for: "eventSources" },
+                "Source:",
+            ),
+            RichTextEditor({
+                id: "eventSources",
+                name: "eventSources",
+                placeholder: "Source citations or references. Use the toolbar to format text and add links.",
+                class: "form-input",
+                value: data.eventSources || "",
+                onchange: (content) => {
+                    // Store the content for form submission
+                    const hiddenInput = document.getElementById('eventSourcesHidden')
+                    if (hiddenInput) {
+                        hiddenInput.value = content
+                    }
+                }
+            }),
+            // Hidden input to store the rich text content for form submission
+            input({
+                type: "hidden",
+                id: "eventSourcesHidden",
+                name: "eventSources",
+                value: data.eventSources || ""
+            }),
+        ),
+    )
 
-        const data = {}
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-            data[key] = value
-        }
+    const modal = Modal({
+        title: title,
+        onClose: remove,
+        footer: [
+            button({ type: "button", class: "btn btn-secondary", onclick: () => remove() },
+                "Cancel",
+            ),
+            button({
+                type: "button",
+                class: "btn btn-primary",
+                onclick: (e) => {
+                    e.preventDefault()
+                    const formData = new FormData(modalForm)
 
-        // Handle custom event type: if "other" is selected and custom input has value, use custom value
-        if (data.eventType === "other" && data.customEventType && data.customEventType.trim()) {
-            data.eventType = data.customEventType.trim()
-        }
-        // Remove the customEventType from the final data as it's not needed
-        delete data.customEventType
+                    const data = {}
+                    for (const [key, value] of formData.entries()) {
+                        console.log(`${key}: ${value}`);
+                        data[key] = value
+                    }
 
-        onSave(data)
-        debounceAutoSave()
-        remove()
-    })
+                    // Handle custom event type: if "other" is selected and custom input has value, use custom value
+                    if (data.eventType === "other" && data.customEventType && data.customEventType.trim()) {
+                        data.eventType = data.customEventType.trim()
+                    }
+                    // Remove the customEventType from the final data as it's not needed
+                    delete data.customEventType
+
+                    onSave(data)
+                    debounceAutoSave()
+                    remove()
+                }
+            },
+                "Save",
+            ),
+        ],
+    }, modalForm)
+
 
     // Add event listener for showing/hiding custom event type input
     modalForm.addEventListener("change", (e) => {
@@ -63,118 +172,6 @@ export default function EventModal({ title = "Event Modal", onClose = ()=>{}, on
     // remove this
     modalForm.style.display = 'block'
 
-    modalForm.replaceChildren(
-        div({ class: "modal-content" },
-            div({ class: "modal-header" },
-                h3(title),
-                span({ class: "close", onclick: () => remove() },
-                    "×",
-                ),
-            ),
-            div({ class: "modal-body" },
-                div({ class: "form-group" },
-                    label({ for: "eventType" },
-                        "Event Type:",
-                    ),
-                    select({ id: "eventType", name: "eventType", class: "form-input", value: data.eventType || "birth" },
-                        option({ value: "birth" },
-                            "Birth",
-                        ),
-                        option({ value: "baptism" },
-                            "Baptism",
-                        ),
-                        option({ value: "christening" },
-                            "Christening",
-                        ),
-                        option({ value: "marriage" },
-                            "Marriage",
-                        ),
-                        option({ value: "divorce" },
-                            "Divorce",
-                        ),
-                        option({ value: "death" },
-                            "Death",
-                        ),
-                        option({ value: "burial" },
-                            "Burial",
-                        ),
-                        option({ value: "census" },
-                            "Census",
-                        ),
-                        option({ value: "residence" },
-                            "Residence",
-                        ),
-                        option({ value: "occupation" },
-                            "Occupation",
-                        ),
-                        option({ value: "military" },
-                            "Military",
-                        ),
-                        option({ value: "other" },
-                            "Other",
-                        ),
-                    ),
-                    // Custom event type input that appears when "Other" is selected
-                    input({ 
-                        type: "text", 
-                        id: "customEventType", 
-                        name: "customEventType", 
-                        placeholder: "Enter custom event type...", 
-                        class: "form-input custom-event-type-input",
-                        style: "display: none; margin-top: 8px;"
-                    }),
-                ),
-                div({ class: "form-group" },
-                    label({ for: "eventDate" },
-                        "Date:",
-                    ),
-                    input({ type: "text", id: "eventDate", name: "eventDate", class: "form-input", placeholder: "12 January, 2025", required: true }),
-                    small({ class: "form-help" }, "Enter date in format: 12 January 2025, January 2025, or 2025"),
-                ),
-                div({ class: "form-group" },
-                    label({ for: "eventDescription" },
-                        "Description:",
-                    ),
-                    input({ type: "text", id: "eventDescription", name: "eventDescription", placeholder: "Additional details", class: "form-input" }),
-                ),
-                div({ class: "form-group" },
-                    label({ for: "eventSources" },
-                        "Source:",
-                    ),
-                    RichTextEditor({
-                        id: "eventSources",
-                        name: "eventSources",
-                        placeholder: "Source citations or references. Use the toolbar to format text and add links.",
-                        class: "form-input",
-                        value: data.eventSources || "",
-                        onchange: (content) => {
-                            // Store the content for form submission
-                            const hiddenInput = document.getElementById('eventSourcesHidden')
-                            if (hiddenInput) {
-                                hiddenInput.value = content
-                            }
-                        }
-                    }),
-                    // Hidden input to store the rich text content for form submission
-                    input({ 
-                        type: "hidden", 
-                        id: "eventSourcesHidden", 
-                        name: "eventSources",
-                        value: data.eventSources || ""
-                    }),
-                ),
-            ),
-            div({ class: "modal-footer" },
-                button({ type: "button", class: "btn btn-secondary", onclick: () => remove() },
-                    "Cancel",
-                ),
-                button({ type: "submit", class: "btn btn-primary", },
-                    "Save",
-                ),
-            ),
-        )
-    )
-
     for (const [key, value] of Object.entries(data)) {
         const element = modalForm.querySelector(`*[name="${key}"]`)
         if (element) {
@@ -188,7 +185,7 @@ export default function EventModal({ title = "Event Modal", onClose = ()=>{}, on
             } else if (key === 'eventType') {
                 // Handle event type and custom event type
                 element.value = value
-                
+
                 // If the event type is not one of the predefined options, treat it as custom
                 const predefinedOptions = ['birth', 'baptism', 'christening', 'marriage', 'divorce', 'death', 'burial', 'census', 'residence', 'occupation', 'military', 'other']
                 if (!predefinedOptions.includes(value)) {
@@ -206,5 +203,5 @@ export default function EventModal({ title = "Event Modal", onClose = ()=>{}, on
         }
     }
 
-    return modalForm
+    return modal
 }

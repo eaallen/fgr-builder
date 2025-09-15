@@ -1023,7 +1023,7 @@ body {
 
 /* Modal Styles */
 .modal {
-    display: none;
+    /* display: none; */
     position: fixed;
     z-index: 1000;
     left: 0;
