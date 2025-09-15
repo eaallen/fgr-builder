@@ -1503,6 +1503,10 @@ button:disabled:hover,
 }
 
 
+#recordId {
+    display: none;
+}
+
 
 @media print {
     body *:not(#to-print, #to-print *) {

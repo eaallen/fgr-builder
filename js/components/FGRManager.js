@@ -1,7 +1,7 @@
 import van from 'vanjs-core';
 import Modal from './Modal';
-import { button, div, h3, p, i } from '../van';
-import { loadFGRsFromFirestore } from '../firestore/firestore';
+import { button, div, h3, p, i, small } from '../van';
+import { deleteFGRFromFirestore, loadFGRsFromFirestore } from '../firestore/firestore';
 import { populateForm } from '../form/formManager';
 import { generateUUID } from '../utils/uuid';
 
@@ -24,11 +24,17 @@ export default function FGRManager({ onClose = () => { } }) {
         if (confirm(`Are you sure you want to delete the record for "${item.fatherName} and ${item.motherName}"?`)) {
             // Delete logic will be implemented here
             console.log("Record deleted:", item);
+            deleteFGRFromFirestore(item.recordId);
+            // set up a firestore listener to update the fgrs state if things get more complicated
+            fgrs.val = fgrs.val.filter(fgr => fgr.recordId !== item.recordId)            
         }
     };
 
     van.derive(() => {
         modalBody.replaceChildren()
+        if(fgrs.val.length === 0) {
+            van.add(modalBody, small("No FGRs have been created yet. Click 'Add new FGR' to get started."))
+        }
         for(const item of fgrs.val) {
             van.add(modalBody, div({ class: "fgr-item" ,onclick: () => { 
                 console.log("clicked", item);
@@ -36,7 +42,7 @@ export default function FGRManager({ onClose = () => { } }) {
                 remove()
             } },
                 div({ class: "fgr-item-header" },
-                    h3({ class: "fgr-item-title" }, `Family of ${item.fatherName} and ${item.motherName}`),
+                    h3({ class: "fgr-item-title" }, `Family of "${item.fatherName}" and "${item.motherName}"`),
                     div({ class: "fgr-item-actions" },
                         button({ 
                             type: "button", 

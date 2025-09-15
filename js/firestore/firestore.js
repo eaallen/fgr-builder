@@ -1,6 +1,6 @@
 // ==================== FIRESTORE INTEGRATION ====================
 
-import { doc, setDoc, getDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection, getDocs, deleteDoc } from 'firebase/firestore';
 import { db } from '../../main.js';
 import { getCurrentUser } from '../auth/auth.js';
 import { collectFormData, populateForm } from '../form/formManager.js';
@@ -88,6 +88,16 @@ export async function saveFGRToFirestore(data) {
     }
     const collectionSnapshot = collection(db, 'users', currentUser.uid, 'fgr_records')
     await setDoc(doc(collectionSnapshot, data.recordId), data, { merge: true })
+}
+
+export async function deleteFGRFromFirestore(recordId) {
+    const currentUser = getCurrentUser();
+    if(!currentUser) {
+        throw new Error('No user signed in');
+    }
+    const docRef = doc(db, 'users', currentUser.uid, 'fgr_records', recordId);
+    await deleteDoc(docRef);
+    console.log('FGR record deleted from Firestore:', recordId);
 }
 
 // Save to localStorage (fallback)
