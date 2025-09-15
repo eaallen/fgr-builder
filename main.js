@@ -14,6 +14,7 @@ import { exportRecord, printFGR } from './js/utils/export.js';
 import { addChild, addSpouse, deleteSpouse, deleteChild } from './js/form/childrenManager.js';
 import {  closeEventModal } from './js/form/eventManager.js';
 import { debounceAutoSave } from './js/firestore/firestore.js';
+import { showFGRManager } from './js/components/FGRManager.js';
 
 // Import VanJS components (example usage)
 // import EventList from './js/components/EventList.js';
@@ -77,6 +78,7 @@ window.addSpouse = addSpouse;
 window.deleteSpouse = deleteSpouse;
 window.deleteChild = deleteChild;
 window.clearForm = clearForm;
+window.showFGRManager = showFGRManager;
 
 
 // ==================== MAIN APPLICATION INITIALIZATION ====================
