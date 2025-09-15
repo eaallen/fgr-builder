@@ -60,14 +60,18 @@ export function collectFormData() {
     data.father = {
         name: data.fatherFullName || '',
         father: data.fatherFather || '',
+        fatherSource: { content: data.fatherFatherSource || '', sourceNumber: 0 }, // source number will be mutated later
         mother: data.fatherMother || '',
+        motherSource: { content: data.fatherMotherSource || '', sourceNumber: 0 }, // source number will be mutated later
         events: fatherEvents.val
     };
 
     data.mother = {
         name: data.motherFullName || '',
         father: data.motherFather || '',
+        fatherSource: { content: data.motherFatherSource || '', sourceNumber: 0 }, // source number will be mutated later
         mother: data.motherMother || '',
+        motherSource: { content: data.motherMotherSource || '', sourceNumber: 0 }, // source number will be mutated later
         events: motherEvents.val
     };
 
@@ -91,10 +95,20 @@ export function collectFormData() {
         sourceNumber++
     })
 
+    data.father.fatherSource.sourceNumber = sourceNumber
+    sourceNumber++
+    data.father.motherSource.sourceNumber = sourceNumber
+    sourceNumber++
+
     data.mother.events.forEach(event => {
         event.sourceNumber = sourceNumber
         sourceNumber++
     })
+
+    data.mother.fatherSource.sourceNumber = sourceNumber
+    sourceNumber++
+    data.mother.motherSource.sourceNumber = sourceNumber
+    sourceNumber++
 
     data.children.forEach(child => {
         child.events.forEach(event => {
@@ -113,6 +127,10 @@ export function collectFormData() {
     delete data.preparerName;
     delete data.preparerAddress;
     delete data.preparerEmail;
+    delete data.fatherFatherSource;
+    delete data.fatherMotherSource;
+    delete data.motherFatherSource;
+    delete data.motherMotherSource;
 
     return data;
 }
@@ -239,6 +257,8 @@ export function populateForm(data) {
         if (data.father.name) document.getElementById('fatherFullName').value = data.father.name;
         if (data.father.father) document.getElementById('fatherFather').value = data.father.father;
         if (data.father.mother) document.getElementById('fatherMother').value = data.father.mother;
+        if (data.father.fatherSource) document.getElementById('fatherFatherSource').value = data.father.fatherSource.content;
+        if (data.father.motherSource) document.getElementById('fatherMotherSource').value = data.father.motherSource.content;
         if (data.father.events) {
             fatherEvents.val = data.father.events
         }
@@ -247,6 +267,8 @@ export function populateForm(data) {
         if (data.mother.name) document.getElementById('motherFullName').value = data.mother.name;
         if (data.mother.father) document.getElementById('motherFather').value = data.mother.father;
         if (data.mother.mother) document.getElementById('motherMother').value = data.mother.mother;
+        if (data.mother.fatherSource) document.getElementById('motherFatherSource').value = data.mother.fatherSource.content;
+        if (data.mother.motherSource) document.getElementById('motherMotherSource').value = data.mother.motherSource.content;
         if (data.mother.events) motherEvents.val = data.mother.events
     }
     if (data.children) globalState.kids = data.children;

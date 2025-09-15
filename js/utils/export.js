@@ -146,8 +146,9 @@ function buildHtml(data) {
 }
 
 const TableHeader = () => tr(
+    th({ width: "20%" }, "Date"),
     th({ width: "20%" }, "Event"),
-    th({ width: "40%" }, "Date"),
+    th({ width: "20%" }, "Place"),
     th({ width: "40%" }, "Notes"),
 )
 
@@ -155,10 +156,10 @@ const TableOfEvents = ({ events }) => table({ class: "exported-table" },
     tbody(
         TableHeader(),
         events.map(event => tr(
-            td(event.type.toUpperCase()),
             td(event.date),
+            td(event.type.toUpperCase()),
+            td(event.place),
             td({ id: sourceNumberId(event.sourceNumber) },
-
                 event.description,
                 event.description &&
                 sup({ class: "source-number" },
@@ -174,12 +175,16 @@ const sourceNumberHref = (sourceNumber) => `#${sourceNumberId(sourceNumber)}`
 const sourceDescriptionId = (sourceNumber) => `source-description-${sourceNumber}`
 const sourceDescriptionHref = (sourceNumber) => `#${sourceDescriptionId(sourceNumber)}`
 
+const SourceSuperText = ({ sourceNumber, pointsTo = 'description' /* description or number */ }) => sup({ class: "source-number" },
+    a({ href: pointsTo === 'description' ? sourceDescriptionHref(sourceNumber) : sourceNumberHref(sourceNumber) }, sourceNumber)
+)
+
 const ParentInfo = ({ parent }) => div(
     div({ class: "" },
         TableOfEvents({ events: parent.events }),
         ul(
-            li(`Father: ${parent.father}`),
-            li(`Mother: ${parent.mother}`),
+            li(`Father: ${parent.father}`, SourceSuperText({ sourceNumber: parent.fatherSource.sourceNumber, pointsTo: 'description' })),
+            li(`Mother: ${parent.mother}`, SourceSuperText({ sourceNumber: parent.motherSource.sourceNumber, pointsTo: 'description' })),
         ),
     ),
 )
@@ -192,7 +197,15 @@ const SourceDescription = ({ data }) => {
     const sources = []
     const pushSource = (event) => { sources.push({ content: event.sources, sourceNumber: event.sourceNumber }) }
     data.father.events.forEach(pushSource)
+    console.log('data.father.fatherSource', data.father)
+    console.log('data.father.motherSource', data.father.motherSource)
+
+    // have to use sources.push since the data is formatted differently than the events
+    sources.push(data.father.fatherSource)
+    sources.push(data.father.motherSource)
     data.mother.events.forEach(pushSource)
+    sources.push(data.mother.fatherSource)
+    sources.push(data.mother.motherSource)
     data.children.forEach(child => { child.events.forEach(pushSource) })
 
     return div({ class: "source-description-container" },
@@ -201,7 +214,7 @@ const SourceDescription = ({ data }) => {
             const para = p({ id: sourceDescriptionId(source.sourceNumber) },
                 a({ href: sourceNumberHref(source.sourceNumber) }, sup(source.sourceNumber)),
             )
-            const content = span({class: "source-content"})
+            const content = span({ class: "source-content" })
             content.innerHTML = source.content
             para.appendChild(content)
             return para

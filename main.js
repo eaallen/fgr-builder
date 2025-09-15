@@ -7,30 +7,13 @@ import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, o
 
 // Import application modules
 import { initializeAuth } from './js/auth/auth.js';
-// import { setupAutoSave } from './js/firestore/firestore.js';
 import { clearForm, initializeForm } from './js/form/formManager.js';
 import { saveRecord } from './js/form/formManager.js';
 import { exportRecord, printFGR } from './js/utils/export.js';
 import { addChild, addSpouse, deleteSpouse, deleteChild } from './js/form/childrenManager.js';
 import {  closeEventModal } from './js/form/eventManager.js';
-import { debounceAutoSave } from './js/firestore/firestore.js';
 import { showFGRManager } from './js/components/FGRManager.js';
 
-// Import VanJS components (example usage)
-// import EventList from './js/components/EventList.js';
-// import ChildList from './js/components/ChildList.js';
-// import van from 'vanjs-core';
-// 
-// Example usage of EventList component:
-// const { div } = van.tags;
-// const events = van.state([]);
-// const eventListComponent = EventList(events);
-// document.getElementById('some-container').appendChild(eventListComponent);
-//
-// Example usage of ChildList component:
-// const children = van.state([]);
-// const childListComponent = ChildList(children);
-// document.getElementById('children-container').appendChild(childListComponent);
 
 // Firebase configuration
 const firebaseConfig = {
