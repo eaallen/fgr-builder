@@ -1,6 +1,6 @@
 // ==================== FIRESTORE INTEGRATION ====================
 
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../main.js';
 import { getCurrentUser } from '../auth/auth.js';
 import { collectFormData, populateForm } from '../form/formManager.js';
@@ -65,6 +65,17 @@ export async function loadFromFirestore() {
         // Fallback to localStorage
         return loadFromLocalStorage();
     }
+}
+
+export async function loadFGRsFromFirestore() {
+    const currentUser = getCurrentUser();
+    if(!currentUser) {
+        throw new Error('No user signed in');
+    }
+    const collectionSnapshot = collection(db, 'users', currentUser.uid, 'fgr_records')
+    const docs = await getDocs(collectionSnapshot)
+    return docs.docs.map(doc => doc.data())
+
 }
 
 // Save to localStorage (fallback)
