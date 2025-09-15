@@ -284,6 +284,11 @@ body {
     padding: 30px;
     margin-bottom: 30px;
     border: 2px solid #e2e8f0;
+    text-align: center;
+}
+
+.family-header small {
+    opacity: 0.3;
 }
 
 .family-header h2 {
@@ -1201,6 +1206,125 @@ button:disabled:hover,
     box-shadow: none !important;
 }
 
+/* FGR Manager Styles */
+.fgr-item {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.fgr-item:hover {
+    background: #f1f5f9;
+    border-color: #c7d2fe;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+    transform: translateY(-1px);
+}
+
+.fgr-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    gap: 16px;
+}
+
+.fgr-item-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #4f46e5;
+    margin: 0;
+    flex: 1;
+    line-height: 1.3;
+}
+
+.fgr-item-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.fgr-item-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.fgr-record-date {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.fgr-record-date i {
+    color: #4f46e5;
+    font-size: 0.9rem;
+}
+
+.fgr-item-actions .btn {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: auto;
+}
+
+.fgr-item-actions .btn-edit {
+    background: #3b82f6;
+    color: white;
+    border: none;
+}
+
+.fgr-item-actions .btn-edit:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.fgr-item-actions .btn-delete {
+    background: #ef4444;
+    color: white;
+    border: none;
+}
+
+.fgr-item-actions .btn-delete:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.fgr-item-actions .btn i {
+    font-size: 0.8rem;
+}
+
+/* FGR Manager Modal Specific Styles */
+.fgr-manager-modal .modal-content {
+    max-width: 800px;
+    width: 95%;
+}
+
+.fgr-manager-modal .modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.fgr-manager-modal .fgr-item {
+    margin-bottom: 12px;
+}
+
+.fgr-manager-modal .fgr-item:last-child {
+    margin-bottom: 0;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
@@ -1290,6 +1414,24 @@ button:disabled:hover,
     .modal-footer {
         padding: 15px 20px;
         flex-direction: column;
+    }
+
+    .fgr-item-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .fgr-item-actions {
+        align-self: flex-end;
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .fgr-item-actions .btn {
+        flex: 1;
+        justify-content: center;
+        max-width: 120px;
     }
 }
 

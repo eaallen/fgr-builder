@@ -82,6 +82,8 @@ export function collectFormData() {
     // Add metadata
     data.created = new Date().toISOString();
 
+    data.recordId = document.getElementById('recordId').innerText;
+
     // add source numbers to events
     let sourceNumber = 1
     data.father.events.forEach(event => {
@@ -223,6 +225,10 @@ export async function saveRecord() {
 export function populateForm(data) {
     formHasBeenPopulated.val = true
     if (!data) return;
+
+    clearForm(false)
+
+    document.getElementById('recordId').innerHTML = data.recordId;
 
     if (data.fatherName) document.getElementById('fatherName').value = data.fatherName
     if (data.motherName) document.getElementById('motherName').value = data.motherName

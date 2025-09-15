@@ -5,6 +5,7 @@ import { db } from '../../main.js';
 import { getCurrentUser } from '../auth/auth.js';
 import { collectFormData, populateForm } from '../form/formManager.js';
 import { isInGuestMode } from '../components/LoginWithGoogleOrContinueAsGuest.js';
+import { populateFormWithNewFGR } from '../components/FGRManager.js';
 
 let isAutoSaving = false;
 
@@ -26,7 +27,8 @@ export async function saveToFirestore(data) {
             userId: currentUser.uid
         };
 
-        await setDoc(userDocRef, userData, { merge: true });
+        // await setDoc(userDocRef, userData, { merge: true });
+        await saveFGRToFirestore(userData)
         console.log('Data saved to Firestore successfully');
         return true;
     } catch (error) {
@@ -46,19 +48,20 @@ export async function loadFromFirestore() {
     }
 
     try {
-        const userDocRef = doc(db, 'users', currentUser.uid);
-        const docSnap = await getDoc(userDocRef);
+        // const userDocRef = doc(db, 'users', currentUser.uid);
+        // const docSnap = await getDoc(userDocRef);
 
-        if (docSnap.exists()) {
-            const data = docSnap.data();
+        const fgrs = await loadFGRsFromFirestore()
+
+        if (fgrs.length > 0) {
+            const data = fgrs.reduce((a,b)=> a.lastUpdated > b.lastUpdated ? a : b)
             console.log('Data loaded from Firestore:', data);
 
             // Import and call populateForm dynamically
             populateForm(data);
             return data;
         } else {
-            console.log('No data found in Firestore');
-            return null;
+            populateFormWithNewFGR()
         }
     } catch (error) {
         console.error('Error loading from Firestore:', error);
@@ -76,6 +79,15 @@ export async function loadFGRsFromFirestore() {
     const docs = await getDocs(collectionSnapshot)
     return docs.docs.map(doc => doc.data())
 
+}
+
+export async function saveFGRToFirestore(data) {
+    const currentUser = getCurrentUser();
+    if(!currentUser) {
+        throw new Error('No user signed in');
+    }
+    const collectionSnapshot = collection(db, 'users', currentUser.uid, 'fgr_records')
+    await setDoc(doc(collectionSnapshot, data.recordId), data, { merge: true })
 }
 
 // Save to localStorage (fallback)
