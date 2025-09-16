@@ -1020,11 +1020,11 @@ body {
 }
 
 .exported-table th:nth-child(1) {
-    width: 10%;
+    width: 25%;
 }
 
 .exported-table th:nth-child(2) {
-    width: 30%;
+    width: 15%;
 }
 
 .exported-table th:nth-child(3) {
