@@ -194,8 +194,8 @@ const ParentInfo = ({ parent }) => div(
     div({ class: "" },
         TableOfEvents({ events: parent.events }),
         ul(
-            li(`Father: ${parent.father}`, SourceSuperText({ sourceNumber: parent.fatherSource.sourceNumber, pointsTo: 'description' })),
-            li(`Mother: ${parent.mother}`, SourceSuperText({ sourceNumber: parent.motherSource.sourceNumber, pointsTo: 'description' })),
+            li({id: sourceNumberId(parent.fatherSource.sourceNumber)}, `Father: ${parent.father}`, SourceSuperText({ sourceNumber: parent.fatherSource.sourceNumber, pointsTo: 'description' })),
+            li({id: sourceNumberId(parent.motherSource.sourceNumber)}, `Mother: ${parent.mother}`, SourceSuperText({ sourceNumber: parent.motherSource.sourceNumber, pointsTo: 'description' })),
         ),
     ),
 )
