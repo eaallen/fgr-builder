@@ -3,16 +3,10 @@ import * as vanX from 'vanjs-ext'
 import { generateChildId, generateSpouseId } from '../utils/uuid.js'
 import EventList from "./EventList.js"
 import { br, i } from "../van/index.js"
-import { debounceAutoSave } from "../firestore/firestore.js"
+import { withAutoSave } from "../firestore/firestore.js"
 
 const { div, button, h3, h5, input } = van.tags
 
-function withAutoSave(fn) {
-    return (...args) => {
-        fn(...args)
-        debounceAutoSave()
-    }
-}
 
 export default function ChildListV2({ state }) {
     van.derive(() => {
@@ -82,7 +76,7 @@ export default function ChildListV2({ state }) {
             button({
                 type: "button",
                 class: "add-child-btn",
-                onclick: () => {
+                onclick: withAutoSave(() => {
                     console.log('adding child');
                     state.kids = [...state.kids, {
                         name: "",
@@ -90,7 +84,7 @@ export default function ChildListV2({ state }) {
                         events: [],
                         id: generateChildId()
                     }]
-                }
+                })
 
             }, "+ Add Child")
         ),
@@ -106,10 +100,19 @@ export default function ChildListV2({ state }) {
                             class: "child-name-input",
                             placeholder: "Child's Name",
                             value: () => kid.val.name,
-                            oninput: (e) => {
+                            oninput: withAutoSave((e) => {
                                 kid.val.name = e.target.value
-                            }
+                            })
                         }),
+                        button({
+                            type: "button",
+                            class: "btn-small btn-delete child-delete-btn",
+                            onclick: withAutoSave(() => {
+                                if (confirm('Are you sure you want to delete this child and all their information?')) {
+                                    state.kids = state.kids.filter(child => child.id !== kid.val.id)
+                                }
+                            })
+                        }, i({ class: "fas fa-trash" })),
                         div({ class: "spouses-section" },
                             h5({}, "Spouses"),
                             () => vanX.list(

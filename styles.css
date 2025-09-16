@@ -734,6 +734,13 @@ body {
     background: #dc2626;
 }
 
+.child-delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+}
+
 .add-event-btn {
     background: #10b981;
     color: white;
@@ -771,6 +778,8 @@ body {
     display: flex;
     gap: 30px;
     align-items: flex-start;
+    position: relative;
+    margin: 10px 0;
 }
 
 .child-item:hover {
@@ -844,6 +853,7 @@ body {
     border-radius: 6px;
     font-size: 0.95rem;
     transition: all 0.2s ease;
+    margin: 2px 0;
 }
 
 .spouse-input:focus {

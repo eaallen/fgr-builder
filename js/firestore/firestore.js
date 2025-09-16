@@ -224,3 +224,10 @@ function showAutoSaveIndicator(message) {
         indicator.style.opacity = '0';
     }, 1500);
 }
+
+export function withAutoSave(fn) {
+    return (...args) => {
+        fn(...args)
+        debounceAutoSave()
+    }
+}
