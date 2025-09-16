@@ -4,13 +4,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Group Record Builder</title>
+    <title>Free Genealogy Form Generator | Backyard Genealogy</title>
+    <meta name="description" content="Create professional Family Group Records for genealogy research. Free online tool to generate family group records as PDFs. Perfect for family historians, genealogists and BYU (Brigham Young University) students.">
+    <meta name="keywords" content="family group record, genealogy form, family group sheet, genealogy template, family tree form, ancestor chart, genealogy research, family history, genealogy tools, free genealogy forms, pdf, PDF, print, fgr">
+    <meta name="author" content="Backyard Genealogy">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://family-group-record.web.app/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://family-group-record.web.app/">
+    <meta property="og:title" content="Family Group Record Builder - Free Genealogy Form Generator">
+    <meta property="og:description" content="Create professional Family Group Records for genealogy research. Free online tool to generate family group records.">
+    <meta property="og:image" content="https://family-group-record.web.app//favicon.svg">
+    <meta property="og:site_name" content="Backyard Genealogy">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://family-group-record.web.app/">
+    <meta property="twitter:title" content="Family Group Record Builder - Free Genealogy Form Generator">
+    <meta property="twitter:description" content="Create professional Family Group Records for genealogy research. Free online tool to generate family group records.">
+    <meta property="twitter:image" content="https://family-group-record.web.app//favicon.svg">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" href="favicon.svg">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Family Group Record Builder",
+        "description": "Create professional Family Group Records for genealogy research. Free online tool to generate family group records. Download as PDF or print.",
+        "url": "https://family-group-record.web.app/",
+        "applicationCategory": "GenealogyApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "creator": {
+            "@type": "Organization",
+            "name": "Backyard Genealogy",
+            "url": "https://backyardgenealogy.com"
+        },
+        "keywords": "family group record, genealogy form, family group sheet, genealogy template, family tree form, ancestor chart, genealogy research, family history, genealogy tools, free genealogy forms, pdf, PDF, print, fgr",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "softwareVersion": "1.0",
+        "datePublished": "2025-09-15",
+        "dateModified": "2025-09-16"
+    }
+    </script>
+    
     <script>
         // setup global variables
         window.autoSaveTimeout = null;
@@ -72,15 +121,15 @@
                     <h2>Family of</h2>
                     <div class="family-names">
                         <input type="text" id="fatherName" name="fatherName" placeholder="Father's Name"
-                            class="name-input">
+                            class="name-input" aria-label="Father's Name">
                         <span class="and-text">and</span>
                         <input type="text" id="motherName" name="motherName" placeholder="Mother's Name"
-                            class="name-input">
+                            class="name-input" aria-label="Mother's Name">
                     </div>
                     <div class="record-date">
                         <label for="recordDate">Record Date:</label>
                         <input type="text" id="recordDate" name="recordDate" class="date-input"
-                            placeholder="12 January, 2025">
+                            placeholder="12 January, 2025" aria-label="Record Date">
                     </div>
                 </div>
 
@@ -171,6 +220,18 @@
                 </div>
 
             </form>
+        </div>
+
+        <!-- SEO Content (hidden from users) -->
+        <div style="position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden;">
+            <h2>Genealogy Research Tools</h2>
+            <p>Our Family Group Record Builder is a comprehensive genealogy tool designed for family historians and genealogists. Create professional family group sheets, ancestor charts, and genealogy forms to document your family tree research. This free online genealogy form generator helps you organize family information, track vital records, and create printable genealogy documents for your family history research.</p>
+            
+            <h3>Genealogy Forms and Templates</h3>
+            <p>Generate family group records, ancestor charts, family tree forms, and other essential genealogy documents. Our genealogy form builder supports multiple family members, event tracking, source citations, and professional formatting for genealogy research projects.</p>
+            
+            <h3>Family History Research</h3>
+            <p>Perfect for family historians conducting genealogical research. Document births, deaths, marriages, and other vital events. Track family relationships, parent information, and create comprehensive family group records for your genealogy research.</p>
         </div>
 
         <!-- Main Application -->
