@@ -21,7 +21,7 @@ van.derive(() => {
     }
 
     if (fatherEvents.oldVal === fatherEvents.val && motherEvents.oldVal === motherEvents.val && globalState.kids.length === 0) {
-        return // not going to auto save if out states are all empty
+        return // not going to auto save if our states are all empty
     }
 
     const formData = collectFormData()
@@ -77,6 +77,8 @@ export function collectFormData() {
 
     data.children = globalState.kids;
 
+    console.log('data.children', data.children)
+
     data.preparer = {
         name: data.preparerName || '',
         address: data.preparerAddress || '',
@@ -91,29 +93,49 @@ export function collectFormData() {
     // add source numbers to events
     let sourceNumber = 1
     data.father.events.forEach(event => {
-        event.sourceNumber = sourceNumber
-        sourceNumber++
+        if (event.sources) {
+            event.sourceNumber = sourceNumber
+            sourceNumber++
+        }
     })
 
-    data.father.fatherSource.sourceNumber = sourceNumber
-    sourceNumber++
-    data.father.motherSource.sourceNumber = sourceNumber
-    sourceNumber++
+    if (data.father.fatherSource.content) {
+        data.father.fatherSource.sourceNumber = sourceNumber
+        sourceNumber++
+    }
+    if (data.father.motherSource.content) {
+        data.father.motherSource.sourceNumber = sourceNumber
+        sourceNumber++
+    }
 
     data.mother.events.forEach(event => {
-        event.sourceNumber = sourceNumber
-        sourceNumber++
+        if (event.sources) {
+            event.sourceNumber = sourceNumber
+            sourceNumber++
+        }
     })
+    if (data.mother.fatherSource.content) {
+        data.mother.fatherSource.sourceNumber = sourceNumber
+        sourceNumber++
+    }
+    if (data.mother.motherSource.content) {
+        data.mother.motherSource.sourceNumber = sourceNumber
+        sourceNumber++
+    }
 
-    data.mother.fatherSource.sourceNumber = sourceNumber
-    sourceNumber++
-    data.mother.motherSource.sourceNumber = sourceNumber
-    sourceNumber++
 
     data.children.forEach(child => {
         child.events.forEach(event => {
-            event.sourceNumber = sourceNumber
-            sourceNumber++
+            if (event.sources) {
+                event.sourceNumber = sourceNumber
+                sourceNumber++
+            }
+        })
+        child.spouses.forEach(spouse => {
+            if (spouse.source.content) {
+                spouse.source.sourceNumber = sourceNumber
+                sourceNumber++
+            }
         })
     })
 
@@ -198,8 +220,8 @@ export function clearForm(showConfirmation = true) {
     // Set today's date as default in genealogy format
     const today = new Date();
     const day = today.getDate();
-    const monthNames = ["January", "February", "March", "April", "May", "June", 
-                       "July", "August", "September", "October", "November", "December"];
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
     const monthName = monthNames[today.getMonth()];
     const year = today.getFullYear();
     const formattedDate = `${day} ${monthName} ${year}`;

@@ -2,55 +2,76 @@ import van from "vanjs-core"
 import * as vanX from 'vanjs-ext'
 import { generateChildId, generateSpouseId } from '../utils/uuid.js'
 import EventList from "./EventList.js"
+import { br, i } from "../van/index.js"
+import { debounceAutoSave } from "../firestore/firestore.js"
 
 const { div, button, h3, h5, input } = van.tags
 
+function withAutoSave(fn) {
+    return (...args) => {
+        fn(...args)
+        debounceAutoSave()
+    }
+}
 
 export default function ChildListV2({ state }) {
-    const legacyState = vanX.stateFields(state)
     van.derive(() => {
         console.log("children", state.kids)
     })
 
 
-    const addSpouse = (childId) => {
+    const addSpouse = withAutoSave((childId) => {
         state.kids = state.kids.map(kid =>
             kid.id === childId
-                ? { ...kid, spouses: [...kid.spouses, { name: "", id: generateSpouseId(childId) }] }
+                ? { ...kid, spouses: [...kid.spouses, { name: "", id: generateSpouseId(childId), source: { content: "", sourceNumber: 0 } }] }
                 : kid
         )
-    }
+    })
 
-    const updateSpouseName = (childId, spouseId, newName) => {
+    const updateSpouseName = withAutoSave((childId, spouseId, newName) => {
         const found = state.kids.find(kid => kid.id === childId).spouses.find(spouse => spouse.id === spouseId)
         found.name = newName
+    })
 
-    }
+    const updateSpouseSource = withAutoSave((childId, spouseId, newSource) => {
+        const found = state.kids.find(kid => kid.id === childId).spouses.find(spouse => spouse.id === spouseId)
+        found.source.content = newSource
+    })
 
-    const deleteSpouse = (childId, spouseId) => {
+    const deleteSpouse = withAutoSave((childId, spouseId) => {
         const spousesState = state.kids.find(kid => kid.id === childId).spouses
         const indexToRemove = spousesState.findIndex(spouse => spouse.id === spouseId)
         state.kids.find(kid => kid.id === childId).spouses = [
             ...spousesState.slice(0, indexToRemove),
             ...spousesState.slice(indexToRemove + 1)
         ]
-    }
+    })
 
     const CreateSpouseItem = (childId, spouse) => {
-        console.log("render spouse");
+        console.log("render spouse", spouse.source);
         return div({ class: "spouse-item" },
-            input({
-                type: "text",
-                class: "spouse-input",
-                placeholder: "Spouse's Name",
-                value: () => spouse.name,
-                oninput: (e) => updateSpouseName(childId, spouse.id, e.target.value)
-            }),
+            div(
+                input({
+                    type: "text",
+                    class: "spouse-input",
+                    placeholder: "Spouse's Name",
+                    value: () => spouse.name,
+                    oninput: (e) => updateSpouseName(childId, spouse.id, e.target.value)
+                }),
+                br(),
+                input({
+                    type: "text",
+                    class: "spouse-input",
+                    placeholder: "Source",
+                    value: () => spouse.source.content || "",
+                    oninput: (e) => updateSpouseSource(childId, spouse.id, e.target.value)
+                })
+            ),
             button({
                 class: "btn-small btn-delete",
                 type: "button",
                 onclick: () => deleteSpouse(childId, spouse.id),
-            }, "Delete")
+            }, i({ class: "fas fa-trash" })),
         )
     }
 
