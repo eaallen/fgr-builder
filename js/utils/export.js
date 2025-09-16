@@ -172,7 +172,6 @@ const TableOfEvents = ({ events }) => table({ class: "exported-table" },
             td(event.place),
             td({ id: sourceNumberId(event.sourceNumber) },
                 event.description,
-                event.description &&
                 sup({ class: "source-number" },
                     a({ href: sourceDescriptionHref(event.sourceNumber) },
                         event.sourceNumber)),
