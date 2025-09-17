@@ -80,7 +80,7 @@ body {
 
 /* Textbook Promotion Styles */
 .textbook-promo {
-    margin: 30px 0;
+    margin-bottom: 30px;
     padding: 20px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 12px;
