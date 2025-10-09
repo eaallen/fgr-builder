@@ -4,6 +4,7 @@ import { collectFormData } from '../form/formManager.js';
 import jsPDF from 'jspdf';
 import van from 'vanjs-core';
 import { a, br, div, h1, h2, h3, li, p, span, sup, ul } from '../van/index.js';
+import { dateSorter } from './date.js';
 
 const { caption, table, tbody, td, tfoot, th, thead, tr } = van.tags
 
@@ -135,16 +136,16 @@ function buildHtml(data) {
             h3(child.name),
             TableOfEvents({ events: child.events }),
             p("Spouses: ", child.spouses && child.spouses.length > 1
-                ? child.spouses.map(spouse => span({id: sourceNumberId(spouse.source.sourceNumber)},
+                ? child.spouses.map(spouse => span({ id: sourceNumberId(spouse.source.sourceNumber) },
                     spouse.name,
                     SourceSuperText({ sourceNumber: spouse.source.sourceNumber, pointsTo: 'description' }),
                     ', '))
-                : child.spouses[0] 
-                ? span({id: sourceNumberId(child.spouses[0].source.sourceNumber)},
-                    child.spouses[0].name,
-                    SourceSuperText({ sourceNumber: child.spouses[0].source.sourceNumber, pointsTo: 'description' }),
-                )
-                : ''
+                : child.spouses[0]
+                    ? span({ id: sourceNumberId(child.spouses[0].source.sourceNumber) },
+                        child.spouses[0].name,
+                        SourceSuperText({ sourceNumber: child.spouses[0].source.sourceNumber, pointsTo: 'description' }),
+                    )
+                    : ''
             ),
         )),
         h2("Comments"),
@@ -163,10 +164,14 @@ const TableHeader = () => tr(
     th({ width: "40%" }, "Notes"),
 )
 
-const TableOfEvents = ({ events }) => table({ class: "exported-table" },
+const TableOfEvents = ({ events }) => {
+    const sortedEvents = [...events].sort((a, b) => {
+        return dateSorter(a.date, b.date)
+    })
+    return table({ class: "exported-table" },
     tbody(
         TableHeader(),
-        events.map(event => tr(
+        sortedEvents.map(event => tr(
             td(event.date),
             td(event.type.toUpperCase()),
             td(event.place),
@@ -178,7 +183,7 @@ const TableOfEvents = ({ events }) => table({ class: "exported-table" },
             ),
         ))
     )
-)
+)}
 
 const sourceNumberId = (sourceNumber) => `source-number-${sourceNumber}`
 const sourceNumberHref = (sourceNumber) => `#${sourceNumberId(sourceNumber)}`
@@ -193,8 +198,8 @@ const ParentInfo = ({ parent }) => div(
     div({ class: "" },
         TableOfEvents({ events: parent.events }),
         ul(
-            li({id: sourceNumberId(parent.fatherSource.sourceNumber)}, `Father: ${parent.father}`, SourceSuperText({ sourceNumber: parent.fatherSource.sourceNumber, pointsTo: 'description' })),
-            li({id: sourceNumberId(parent.motherSource.sourceNumber)}, `Mother: ${parent.mother}`, SourceSuperText({ sourceNumber: parent.motherSource.sourceNumber, pointsTo: 'description' })),
+            li({ id: sourceNumberId(parent.fatherSource.sourceNumber) }, `Father: ${parent.father}`, SourceSuperText({ sourceNumber: parent.fatherSource.sourceNumber, pointsTo: 'description' })),
+            li({ id: sourceNumberId(parent.motherSource.sourceNumber) }, `Mother: ${parent.mother}`, SourceSuperText({ sourceNumber: parent.motherSource.sourceNumber, pointsTo: 'description' })),
         ),
     ),
 )

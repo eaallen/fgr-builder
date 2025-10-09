@@ -1,7 +1,7 @@
 import van from "vanjs-core"
 import * as vanX from 'vanjs-ext'
 import EventModal from './EventModal.js'
-import { formatDateForDisplay, formatDateToISO } from '../utils/date.js'
+import { dateSorter } from '../utils/date.js'
 
 const { div, button, h3, p } = van.tags
 
@@ -136,13 +136,7 @@ export default function EventList(eventState) {
 
 
     const eventsList = van.derive(() => {
-        const sortedEvents = [...events.val].sort((a, b) => {
-            const dateA = new Date(a.date || '1900-01-01')
-            const dateB = new Date(b.date || '1900-01-01')
-            return dateA - dateB
-        })
-
-        console.log("sortedEvents", sortedEvents)
+        const sortedEvents = [...events.val].sort((a, b) => { dateSorter(a.date, b.date) })
 
         return div({ class: "events-list" },
             ...sortedEvents.map(event => createEventItem(event)),

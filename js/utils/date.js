@@ -173,3 +173,7 @@ function formatDateString(dateString) {
     const monthName = monthNames[month - 1]
     return `${day} ${monthName} ${year}`
 }
+
+export function dateSorter(dateA, dateB) {
+    return new Date(dateA || '1900-01-01') - new Date(dateB || '1900-01-01')
+}
