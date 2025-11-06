@@ -1,10 +1,9 @@
 // ==================== EXPORT UTILITY FUNCTIONS ====================
 
 import { collectFormData } from '../form/formManager.js';
-import jsPDF from 'jspdf';
 import van from 'vanjs-core';
 import { a, br, div, h1, h2, h3, li, p, span, sup, ul } from '../van/index.js';
-import { dateSorter } from './date.js';
+import { eventsByDate } from './date.js';
 
 const { caption, table, tbody, td, tfoot, th, thead, tr } = van.tags
 
@@ -165,9 +164,7 @@ const TableHeader = () => tr(
 )
 
 const TableOfEvents = ({ events }) => {
-    const sortedEvents = [...events].sort((a, b) => {
-        return dateSorter(a.date, b.date)
-    })
+    const sortedEvents = [...events].sort(eventsByDate)
     return table({ class: "exported-table" },
     tbody(
         TableHeader(),

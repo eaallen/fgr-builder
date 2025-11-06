@@ -1,6 +1,5 @@
 // ==================== FORM MANAGEMENT ====================
 
-import { generateChildId } from '../utils/uuid.js';
 import { validateField, clearFieldError } from '../utils/validation.js';
 import { saveToFirestore } from '../firestore/firestore.js';
 import van from 'vanjs-core';
@@ -8,6 +7,7 @@ import * as vanX from 'vanjs-ext';
 import EventList from '../components/EventList.js';
 import { debounceAutoSave } from '../firestore/firestore.js';
 import ChildList from '../components/ChildList.js';
+import { eventsByDate } from '../utils/date.js';
 
 const formHasBeenPopulated = van.state(false)
 const globalState = vanX.reactive({ kids: [], fatherEvents: [], motherEvents: [] })
@@ -92,7 +92,7 @@ export function collectFormData() {
 
     // add source numbers to events
     let sourceNumber = 1
-    data.father.events.forEach(event => {
+    data.father.events.sort(eventsByDate).forEach(event => {
         if (event.sources) {
             event.sourceNumber = sourceNumber
             sourceNumber++
@@ -108,7 +108,7 @@ export function collectFormData() {
         sourceNumber++
     }
 
-    data.mother.events.forEach(event => {
+    data.mother.events.sort(eventsByDate).forEach(event => {
         if (event.sources) {
             event.sourceNumber = sourceNumber
             sourceNumber++
@@ -125,7 +125,7 @@ export function collectFormData() {
 
 
     data.children.forEach(child => {
-        child.events.forEach(event => {
+        child.events.sort(eventsByDate).forEach(event => {
             if (event.sources) {
                 event.sourceNumber = sourceNumber
                 sourceNumber++
