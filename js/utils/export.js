@@ -246,12 +246,27 @@ const SourceDescription = ({ data }) => {
 
 // Convert HTML to PDF and download
 export async function printFGR() {
+    if(!isChromeOnDesktop()) {
+        alert("PDF download is only supported on Chrome for desktop. Other browsers may not support the generated links within the PDF.");
+    }
     const formData = collectFormData();
     const htmlTable = buildHtml(formData);
     document.body.appendChild(htmlTable);
     print()
     document.body.removeChild(htmlTable);
 }
+
+function isChromeOnDesktop() {
+    const isChrome = navigator.userAgent.indexOf("Chrome") > -1 &&
+                     navigator.userAgent.indexOf("Chromium") === -1 &&
+                     navigator.userAgent.indexOf("Edg") === -1 &&
+                     navigator.userAgent.indexOf("OPR") === -1;
+
+    const isDesktop = !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) &&
+                      navigator.maxTouchPoints === 0;
+
+    return isChrome && isDesktop;
+  }
 
 
 // Export functions that need to be available globally
