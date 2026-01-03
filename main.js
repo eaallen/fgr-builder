@@ -1,5 +1,13 @@
 // ==================== FIREBASE INITIALIZATION ====================
 
+/**
+ * @typedef {import('firebase/ai').GenerativeModel} GenerativeModel
+ * @typedef {import('firebase/ai').AI} AI
+ * @typedef {import('firebase/app').FirebaseApp} FirebaseApp
+ * @typedef {import('firebase/auth').Auth} Auth
+ * @typedef {import('firebase/firestore').Firestore} Firestore
+ */
+
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
@@ -31,12 +39,17 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
+/** @type {FirebaseApp} */
 const app = initializeApp(firebaseConfig);
+/** @type {Auth} */
 const auth = getAuth(app);
+/** @type {Firestore} */
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 const analytics = getAnalytics(app);
+/** @type {AI} */
 const ai = getAI(app, { backend: new GoogleAIBackend() });
+/** @type {GenerativeModel} */
 const model = getGenerativeModel(ai, { model: "gemini-2.5-flash" });
 
 
@@ -71,7 +84,7 @@ window.clearForm = clearForm;
 window.showFGRManager = showFGRManager;
 
 // Placeholder for import from text functionality
-window.importFromText = ()=> addModal(ImportFromTextModal({model}))
+window.importFromText = ()=> addModal(ImportFromTextModal({ai}))
 
 
 // ==================== MAIN APPLICATION INITIALIZATION ====================
