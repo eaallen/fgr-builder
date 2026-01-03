@@ -26,43 +26,19 @@ export default function EventModal({ title = "Event Modal", onClose = () => { },
             label({ for: "eventType" },
                 "Event Type:",
             ),
-            select({ id: "eventType", name: "eventType", class: "form-input", value: data.eventType || "birth" },
-                option({ value: "birth" },
-                    "Birth",
-                ),
-                option({ value: "baptism" },
-                    "Baptism",
-                ),
-                option({ value: "christening" },
-                    "Christening",
-                ),
-                option({ value: "marriage" },
-                    "Marriage",
-                ),
-                option({ value: "divorce" },
-                    "Divorce",
-                ),
-                option({ value: "death" },
-                    "Death",
-                ),
-                option({ value: "burial" },
-                    "Burial",
-                ),
-                option({ value: "census" },
-                    "Census",
-                ),
-                option({ value: "residence" },
-                    "Residence",
-                ),
-                option({ value: "occupation" },
-                    "Occupation",
-                ),
-                option({ value: "military" },
-                    "Military",
-                ),
-                option({ value: "other" },
-                    "Other",
-                ),
+            select({ id: "eventType", name: "eventType", class: "form-input", value: data.eventType?.toLowerCase() || "birth" },
+                option({ value: "birth" }, "Birth"),
+                option({ value: "baptism" }, "Baptism"),
+                option({ value: "christening" }, "Christening"),
+                option({ value: "marriage" }, "Marriage"),
+                option({ value: "divorce" }, "Divorce"),
+                option({ value: "death" }, "Death"),
+                option({ value: "burial" }, "Burial"),
+                option({ value: "census" }, "Census"),
+                option({ value: "residence" }, "Residence"),
+                option({ value: "occupation" }, "Occupation"),
+                option({ value: "military" }, "Military"),
+                option({ value: "other" }, "Other"),
             ),
             // Custom event type input that appears when "Other" is selected
             input({
@@ -178,6 +154,7 @@ export default function EventModal({ title = "Event Modal", onClose = () => { },
     // remove this
     modalForm.style.display = 'block'
 
+    // initialize the modal form with the data
     for (const [key, value] of Object.entries(data)) {
         const element = modalForm.querySelector(`*[name="${key}"]`)
         if (element) {
@@ -190,11 +167,11 @@ export default function EventModal({ title = "Event Modal", onClose = () => { },
                 // The rich text editor will be initialized with the value from the props
             } else if (key === 'eventType') {
                 // Handle event type and custom event type
-                element.value = value
+                element.value = value?.toLowerCase() 
 
                 // If the event type is not one of the predefined options, treat it as custom
                 const predefinedOptions = ['birth', 'baptism', 'christening', 'marriage', 'divorce', 'death', 'burial', 'census', 'residence', 'occupation', 'military', 'other']
-                if (!predefinedOptions.includes(value)) {
+                if (!predefinedOptions.includes(value.toLowerCase())) {
                     // Set select to "other" and show custom input with the custom value
                     element.value = 'other'
                     const customInput = modalForm.querySelector('#customEventType')
@@ -204,7 +181,7 @@ export default function EventModal({ title = "Event Modal", onClose = () => { },
                     }
                 }
             } else {
-                element.value = value
+                element.value = value?.toLowerCase() 
             }
         }
     }

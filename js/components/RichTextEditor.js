@@ -15,7 +15,6 @@ export default function RichTextEditor({
 
     // Initialize the editor with content
     const initializeEditor = (element) => {
-        console.log("initializing editor", element)
         if (isInitialized) return
         editorElement = element
         isInitialized = true
@@ -42,9 +41,7 @@ export default function RichTextEditor({
         // })
         
         // Add input event handler
-        console.log("adding input event handler", element)
         element.addEventListener('input', () => {
-            console.log("element.innerHTML------>", element.innerHTML)
             onchange(element.innerHTML)
         })
     }
@@ -57,9 +54,6 @@ export default function RichTextEditor({
         const htmlData = clipboardData.getData('text/html')
         const textData = clipboardData.getData('text/plain')
         
-        console.log('Paste event - HTML data:', htmlData)
-        console.log('Paste event - Text data:', textData)
-        
         const selection = window.getSelection()
         if (!selection.rangeCount) return
         
@@ -71,7 +65,6 @@ export default function RichTextEditor({
         if (htmlData) {
             // Extract and clean HTML content while preserving links
             const cleanedHTML = cleanPastedHTML(htmlData)
-            console.log('Cleaned HTML:', cleanedHTML)
             
             // Create a temporary container to hold the cleaned HTML
             const tempDiv = document.createElement('div')
@@ -104,14 +97,11 @@ export default function RichTextEditor({
         selection.addRange(range)
         
         // Trigger change event
-        console.log('Final editor content:', editorElement.innerHTML)
         onchange(editorElement.innerHTML)
     }
 
     // Clean pasted HTML to preserve links but remove unwanted formatting
     const cleanPastedHTML = (html) => {
-        console.log('Original HTML:', html)
-        
         const tempDiv = document.createElement('div')
         tempDiv.innerHTML = removeComments(html)
         
@@ -209,7 +199,6 @@ export default function RichTextEditor({
         "data-placeholder": placeholder,
         
     })
-    console.log("editor---:)--->", editor)
 
     initializeEditor(editor)
 
@@ -241,7 +230,6 @@ const removeNodesWithoutText = (node) => {
     //     removeNodesWithoutText(child)
     // }
     for(const child of node.childNodes) {
-        console.log("child------>", child.textContent)
         if(child.textContent === "") {
             child.remove()
         } else {
