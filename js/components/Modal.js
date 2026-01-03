@@ -31,3 +31,7 @@ export default function Modal({
 
     return modal
 }
+
+export function addModal(modal) {
+    document.body.appendChild(modal)
+}

@@ -4,6 +4,7 @@ import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, orderBy, onSnapshot } from 'firebase/firestore';
+import { getAI, GoogleAIBackend } from "firebase/ai";
 
 // Import application modules
 import { initializeAuth } from './js/auth/auth.js';
@@ -13,6 +14,9 @@ import { exportRecord, printFGR } from './js/utils/export.js';
 import { addChild, addSpouse, deleteSpouse, deleteChild } from './js/form/childrenManager.js';
 import {  closeEventModal } from './js/form/eventManager.js';
 import { showFGRManager } from './js/components/FGRManager.js';
+import ImportFromTextModal from './js/components/ImportFromTextModal.js';
+import { getGenerativeModel } from "firebase/ai";
+import { addModal } from './js/components/Modal.js';
 
 
 // Firebase configuration
@@ -32,9 +36,12 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 const analytics = getAnalytics(app);
+const ai = getAI(app, { backend: new GoogleAIBackend() });
+const model = getGenerativeModel(ai, { model: "gemini-2.5-flash" });
+
 
 // Export Firebase instances for use in other modules
-export { auth, db, provider };
+export { auth, db, provider};
 
 // Make Firebase available globally for backward compatibility
 window.firebase = { 
@@ -62,6 +69,9 @@ window.deleteSpouse = deleteSpouse;
 window.deleteChild = deleteChild;
 window.clearForm = clearForm;
 window.showFGRManager = showFGRManager;
+
+// Placeholder for import from text functionality
+window.importFromText = ()=> addModal(ImportFromTextModal({model}))
 
 
 // ==================== MAIN APPLICATION INITIALIZATION ====================
