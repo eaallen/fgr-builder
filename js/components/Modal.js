@@ -8,7 +8,7 @@ export default function Modal({
     const modal = div({ class: "modal" },
         div({ class: "modal-content" },
             div({ class: "modal-header" },
-                h3(title),
+                typeof title === 'string' ? h3(title) : title,
                 span({ class: "close", onclick: () => remove() },
                     "×",
                 ),

@@ -192,13 +192,12 @@ export default function RichTextEditor({
 
     // Editor component
     const editor = div({
-        id,
-        name,
         class: `rich-text-editor ${className}`,
         contenteditable: true,
-        "data-placeholder": placeholder,
-        
+        "data-placeholder": placeholder,  
     })
+    id && (editor.id = id)
+    name && (editor.name = name)
 
     initializeEditor(editor)
 

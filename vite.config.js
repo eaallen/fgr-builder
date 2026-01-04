@@ -6,10 +6,12 @@ export default defineConfig({
     port: 3000,
     open: true,
     hmr: {
-      overlay: true
+      overlay: true,
+      clientPort: 3000
     },
     watch: {
-      usePolling: true
+      usePolling: true,
+      interval: 100
     }
   },
 

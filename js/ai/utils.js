@@ -14,7 +14,9 @@ import { getGenerativeModel } from 'firebase/ai';
  * @returns {Promise<Object>} The structured FGR data object
  */
 export async function run(ai, userInput, schema) {
-    const prompt = `Given this user input, create a Family Group Record (FGR). Extract all available information about the family, including:
+    const prompt = `
+# Instructions
+Given this user input, create a Family Group Record (FGR). Extract all available information about the family, including:
 
 - Father's name and information (birth, death, marriage dates, parents, etc.)
 - Mother's name and information (birth, death, marriage dates, parents, etc.)
@@ -25,8 +27,13 @@ export async function run(ai, userInput, schema) {
 
 The user input may be in any format or order. Extract and organize the information into a structured Family Group Record.
 
-User input:
-${userInput}`;
+The User Input will be HTML formatted. Get the text out of the html, and be sure to include any given links with the respective sources. 
+
+When dealing with links/urls, use <a> tags with the href attribute to include the link.
+
+# User Input
+${userInput}
+`;
 
     // Create a model instance with the schema configured
     const model = getGenerativeModel(ai, {
