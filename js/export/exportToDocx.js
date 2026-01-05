@@ -1,4 +1,4 @@
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType } from "docx";
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, Bookmark, InternalHyperlink } from "docx";
 import { saveAs } from "file-saver";
 import { collectFormData } from '../form/formManager.js';
 import { eventsByDate } from '../utils/date.js';
@@ -81,7 +81,7 @@ function buildDocxContent(data) {
         const fatherText = `Father: ${data.father.father}`;
         const runs = [new TextRun(fatherText)];
         if (data.father.fatherSource?.sourceNumber) {
-            runs.push(new TextRun({ text: ` ${data.father.fatherSource.sourceNumber}`, superScript: true }));
+            runs.push(createSourceReference(data.father.fatherSource.sourceNumber));
         }
         children.push(new Paragraph({ children: runs, spacing: { after: 50 } }));
     }
@@ -90,7 +90,7 @@ function buildDocxContent(data) {
         const motherText = `Mother: ${data.father.mother}`;
         const runs = [new TextRun(motherText)];
         if (data.father.motherSource?.sourceNumber) {
-            runs.push(new TextRun({ text: ` ${data.father.motherSource.sourceNumber}`, superScript: true }));
+            runs.push(createSourceReference(data.father.motherSource.sourceNumber));
         }
         children.push(new Paragraph({ children: runs, spacing: { after: 100 } }));
     }
@@ -112,7 +112,7 @@ function buildDocxContent(data) {
         const fatherText = `Father: ${data.mother.father}`;
         const runs = [new TextRun(fatherText)];
         if (data.mother.fatherSource?.sourceNumber) {
-            runs.push(new TextRun({ text: ` ${data.mother.fatherSource.sourceNumber}`, superScript: true }));
+            runs.push(createSourceReference(data.mother.fatherSource.sourceNumber));
         }
         children.push(new Paragraph({ children: runs, spacing: { after: 50 } }));
     }
@@ -121,7 +121,7 @@ function buildDocxContent(data) {
         const motherText = `Mother: ${data.mother.mother}`;
         const runs = [new TextRun(motherText)];
         if (data.mother.motherSource?.sourceNumber) {
-            runs.push(new TextRun({ text: ` ${data.mother.motherSource.sourceNumber}`, superScript: true }));
+            runs.push(createSourceReference(data.mother.motherSource.sourceNumber));
         }
         children.push(new Paragraph({ children: runs, spacing: { after: 100 } }));
     }
@@ -145,14 +145,18 @@ function buildDocxContent(data) {
             const runs = [new TextRun(childName)];
             
             if (child.spouses && child.spouses.length > 0) {
-                const spouseNames = child.spouses.map(spouse => {
-                    const name = spouse.name || '';
-                    if (spouse.source?.sourceNumber) {
-                        return `${name}${spouse.source.sourceNumber}`;
+                runs.push(new TextRun(' (Spouses: '));
+                child.spouses.forEach((spouse, spouseIndex) => {
+                    if (spouseIndex > 0) {
+                        runs.push(new TextRun(', '));
                     }
-                    return name;
-                }).join(', ');
-                runs.push(new TextRun({ text: ` (Spouses: ${spouseNames})` }));
+                    const name = spouse.name || '';
+                    runs.push(new TextRun(name));
+                    if (spouse.source?.sourceNumber) {
+                        runs.push(createSourceReference(spouse.source.sourceNumber));
+                    }
+                });
+                runs.push(new TextRun(')'));
             }
 
             children.push(
@@ -213,8 +217,25 @@ function buildDocxContent(data) {
         );
 
         sources.sort((a, b) => a.sourceNumber - b.sourceNumber).forEach(source => {
+            const bookmarkId = `source-${source.sourceNumber}`;
+            const referenceBookmarkId = `ref-${source.sourceNumber}`;
             const runs = [
-                new TextRun({ text: `${source.sourceNumber}. `, superScript: true }),
+                new Bookmark({
+                    id: bookmarkId,
+                    children: [
+                        new InternalHyperlink({
+                            anchor: referenceBookmarkId,
+                            children: [
+                                new TextRun({
+                                    text: `${source.sourceNumber}`,
+                                    superScript: true,
+                                    style: "Hyperlink",
+                                }),
+                            ],
+                        }),
+                    ],
+                }),
+                new TextRun({ text: '. ' }),
                 new TextRun(source.content || ''),
             ];
             children.push(new Paragraph({ children: runs, spacing: { after: 100 } }));
@@ -253,7 +274,7 @@ function buildEventsTable(events) {
     sortedEvents.forEach(event => {
         const notesRuns = [new TextRun(event.description || '')];
         if (event.sourceNumber) {
-            notesRuns.push(new TextRun({ text: ` ${event.sourceNumber}`, superScript: true }));
+            notesRuns.push(createSourceReference(event.sourceNumber));
         }
 
         tableRows.push(
@@ -318,4 +339,27 @@ function collectSources(data) {
     }
 
     return sources;
+}
+
+// Helper function to create a source reference (bookmark + hyperlink)
+// The bookmark allows Sources section to link back, the hyperlink links to Sources section
+function createSourceReference(sourceNumber) {
+    const bookmarkId = `source-${sourceNumber}`; // Links to Sources section
+    const referenceBookmarkId = `ref-${sourceNumber}`; // Bookmark at this location for Sources to link back
+    
+    return new Bookmark({
+        id: referenceBookmarkId,
+        children: [
+            new InternalHyperlink({
+                anchor: bookmarkId,
+                children: [
+                    new TextRun({
+                        text: ` ${sourceNumber}`,
+                        superScript: true,
+                        style: "Hyperlink",
+                    }),
+                ],
+            }),
+        ],
+    });
 }

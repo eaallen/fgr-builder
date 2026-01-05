@@ -20,11 +20,11 @@ import { clearForm, initializeForm } from './js/form/formManager.js';
 import { saveRecord } from './js/form/formManager.js';
 import { exportRecord, printFGR } from './js/export/export.js';
 import { exportToDocx } from './js/export/exportToDocx.js';
+import { docxExample } from './js/export/docxexamples.js';
 import { addChild, addSpouse, deleteSpouse, deleteChild } from './js/form/childrenManager.js';
 import { closeEventModal } from './js/form/eventManager.js';
 import { showFGRManager } from './js/components/FGRManager.js';
 import ImportFromTextModal from './js/components/ImportFromTextModal.js';
-import { getGenerativeModel } from "firebase/ai";
 import { addModal } from './js/components/Modal.js';
 
 
@@ -89,7 +89,7 @@ window.deleteChild = deleteChild
 window.clearForm = clearForm
 window.showFGRManager = showFGRManager
 window.exportToDocx = exportToDocx
-
+window.docxExample = docxExample
 // Placeholder for import from text functionality
 window.importFromText = () => addModal(ImportFromTextModal({ ai }))
 
