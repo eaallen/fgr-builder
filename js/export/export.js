@@ -3,7 +3,7 @@
 import { collectFormData } from '../form/formManager.js';
 import van from 'vanjs-core';
 import { a, br, div, h1, h2, h3, li, p, span, sup, ul } from '../van/index.js';
-import { eventsByDate } from './date.js';
+import { eventsByDate } from '../utils/date.js';
 
 const { caption, table, tbody, td, tfoot, th, thead, tr } = van.tags
 

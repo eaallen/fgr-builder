@@ -18,7 +18,8 @@ import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import { initializeAuth } from './js/auth/auth.js';
 import { clearForm, initializeForm } from './js/form/formManager.js';
 import { saveRecord } from './js/form/formManager.js';
-import { exportRecord, printFGR } from './js/utils/export.js';
+import { exportRecord, printFGR } from './js/export/export.js';
+import { exportToDocx } from './js/export/exportToDocx.js';
 import { addChild, addSpouse, deleteSpouse, deleteChild } from './js/form/childrenManager.js';
 import { closeEventModal } from './js/form/eventManager.js';
 import { showFGRManager } from './js/components/FGRManager.js';
@@ -81,12 +82,13 @@ window.firebase = {
 };
 
 // Make functions available globally for backward compatibility
-window.addChild = addChild;
-window.addSpouse = addSpouse;
-window.deleteSpouse = deleteSpouse;
-window.deleteChild = deleteChild;
-window.clearForm = clearForm;
-window.showFGRManager = showFGRManager;
+window.addChild = addChild
+window.addSpouse = addSpouse
+window.deleteSpouse = deleteSpouse
+window.deleteChild = deleteChild
+window.clearForm = clearForm
+window.showFGRManager = showFGRManager
+window.exportToDocx = exportToDocx
 
 // Placeholder for import from text functionality
 window.importFromText = () => addModal(ImportFromTextModal({ ai }))
