@@ -29,7 +29,7 @@ The user input may be in any format or order. Extract and organize the informati
 
 The User Input will be HTML formatted. Get the text out of the html, and be sure to include any given links with the respective sources. 
 
-When dealing with links/urls, use <a> tags with the href attribute to include the link.
+When dealing with links/urls, use <a> tags with the href attribute to include the link. With greater than or less than signs, DO NOT use the &gt; and &lt; Just use > and <.
 
 # User Input
 ${userInput}

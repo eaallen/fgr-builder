@@ -12,6 +12,7 @@ import { generateUUID } from "../utils/uuid.js";
 import TextEditor from "./TextEditor.js";
 import VStack from "./VStack.js";
 import Space from "./Space.js";
+import keepScreenAlive from "../utils/keepscreenalive.js";
 
 /**
  * Import from Text Modal Component
@@ -53,13 +54,19 @@ export default function ImportFromTextModal({ ai }) {
     ];
 
 
-    const handleImport = () => {
+    const handleImport = async () => {
         const userInput = userInputValue.trim();
+
+        console.log("userInput---------->", userInput.length);
+
+        await keepScreenAlive();
 
         if (!userInput) {
             alert('Please enter some text to import.');
             return;
         }
+
+        console.time(handleImport.name)
 
         // Disable button during processing
         importButton.disabled = true;
@@ -102,6 +109,7 @@ export default function ImportFromTextModal({ ai }) {
 
                 // Close the modal by removing it from DOM
                 modal.remove();
+                console.timeEnd(handleImport.name)
 
             });
     };

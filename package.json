@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.0.1",
+    "docx": "^9.5.1",
     "firebase": "^12.7.0",
     "jspdf": "^3.0.2",
     "vanjs-core": "^1.5.5",
