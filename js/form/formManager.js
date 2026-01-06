@@ -89,6 +89,7 @@ export function collectFormData() {
     data.created = new Date().toISOString();
 
     data.recordId = document.getElementById('recordId').innerText;
+    data.recordDate = document.getElementById('recordDate').value;
 
     // add source numbers to events
     let sourceNumber = 1

@@ -5,6 +5,8 @@
  */
 
 import { getGenerativeModel } from 'firebase/ai';
+import { collectFormData } from '../form/formManager';
+import { formatRecordAsText } from '../export/export';
 
 /**
  * Runs a generative model with a prompt and schema to generate structured output
@@ -14,8 +16,10 @@ import { getGenerativeModel } from 'firebase/ai';
  * @returns {Promise<Object>} The structured FGR data object
  */
 export async function run(ai, userInput, schema) {
+    const currentFGR = collectFormData();
+    const currentFGRText = formatRecordAsText(currentFGR);
     const prompt = `
-# Instructions
+## Instructions
 Given this user input, create a Family Group Record (FGR). Extract all available information about the family, including:
 
 - Father's name and information (birth, death, marriage dates, parents, etc.)
@@ -31,7 +35,16 @@ The User Input will be HTML formatted. Get the text out of the html, and be sure
 
 When dealing with links/urls, use <a> tags with the href attribute to include the link. With greater than or less than signs, DO NOT use the &gt; and &lt; Just use > and <.
 
-# User Input
+## Steps
+1. Read the current FGR and the user input (it might be an empty template or full of information).
+2. Extract the information from the user input.
+3. Organize the information into a structured Family Group Record.
+4. Return the structured Family Group Record.
+
+## Current FGR
+${currentFGRText}
+
+## User Input
 ${userInput}
 `;
 

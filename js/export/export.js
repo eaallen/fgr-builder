@@ -32,7 +32,7 @@ export function exportRecord() {
 }
 
 // Format record as text
-function formatRecordAsText(data) {
+export function formatRecordAsText(data) {
     let content = `FAMILY GROUP RECORD\n`;
     content += `Record Date: ${data.recordDate}\n`;
     content += `Family of ${data.father.name} and ${data.mother.name}\n\n`;

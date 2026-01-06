@@ -7,7 +7,7 @@ import { button, div, small, p, a, i } from "../van";
 import Modal from "./Modal.js";
 import { run } from "../ai/utils.js";
 import { fgrSchema } from "../ai/fgrSchema.js";
-import { populateForm } from "../form/formManager.js";
+import { collectFormData, populateForm } from "../form/formManager.js";
 import { generateUUID } from "../utils/uuid.js";
 import TextEditor from "./TextEditor.js";
 import VStack from "./VStack.js";
@@ -84,9 +84,10 @@ export default function ImportFromTextModal({ ai }) {
 
         run(ai, userInput, fgrSchema)
             .then(fgrData => {
+                const oldFGRData = collectFormData()
                 // overrides to prevent inaccurate data
-                fgrData.recordId = generateUUID();
-                fgrData.recordDate = new Date().toLocaleDateString();
+                fgrData.recordId = oldFGRData.recordId;
+                fgrData.recordDate = oldFGRData.recordDate || new Date().toLocaleDateString();
 
                 // Populate the form with the imported data
                 populateForm(fgrData);
