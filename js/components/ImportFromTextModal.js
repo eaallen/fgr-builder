@@ -8,7 +8,6 @@ import Modal from "./Modal.js";
 import { run } from "../ai/utils.js";
 import { fgrSchema } from "../ai/fgrSchema.js";
 import { collectFormData, populateForm } from "../form/formManager.js";
-import { generateUUID } from "../utils/uuid.js";
 import TextEditor from "./TextEditor.js";
 import VStack from "./VStack.js";
 import Space from "./Space.js";
