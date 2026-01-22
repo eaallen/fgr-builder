@@ -13,7 +13,7 @@ import { div } from "../van";
  * @returns {HTMLElement} The HStack element
  */
 export default function HStack({
-    spacing = 0,
+    spacing = 10,
     alignment = 'center',
     class: className = '',
     style: inlineStyle = '',

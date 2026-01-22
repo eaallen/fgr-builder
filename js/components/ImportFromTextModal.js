@@ -12,6 +12,8 @@ import TextEditor from "./TextEditor.js";
 import VStack from "./VStack.js";
 import Space from "./Space.js";
 import keepScreenAlive from "../utils/keepscreenalive.js";
+import Progress from "./Progress.js";
+import HStack from "./HStack.js";
 
 /**
  * Import from Text Modal Component
@@ -21,9 +23,13 @@ import keepScreenAlive from "../utils/keepscreenalive.js";
  */
 export default function ImportFromTextModal({ ai }) {
     let userInputValue = "";
-    
+
     // State for showing privacy policy
     const showPrivacyPolicy = van.state(false);
+    const progressValue = van.state(0);
+
+
+
 
     const textinput = TextEditor({
         placeholder: "Paste your family notes here. They can be in any format or order...",
@@ -31,6 +37,7 @@ export default function ImportFromTextModal({ ai }) {
     })
 
     let messageInterval = null;
+    let progressInterval = null;
 
     const intervalMs = 3500
 
@@ -81,6 +88,13 @@ export default function ImportFromTextModal({ ai }) {
             messageDisplay.textContent = cleverMessages[messageIndex];
         }, intervalMs);
 
+        const expectedWaitTime = (userInput.length * 14) + 2000;
+
+        progressInterval = setInterval(() => {
+            progressValue.val = (progressValue.val + 0.1) % 100;
+        }, expectedWaitTime * 0.001);
+
+
         run(ai, userInput, fgrSchema)
             .then(fgrData => {
                 const oldFGRData = collectFormData()
@@ -102,6 +116,11 @@ export default function ImportFromTextModal({ ai }) {
                     messageInterval = null;
                 }
 
+                if (progressInterval) {
+                    clearInterval(progressInterval);
+                    progressInterval = null;
+                }
+
                 // clean up messaging
                 messageDisplay.style.display = 'none';
                 importButton.disabled = false;
@@ -116,19 +135,19 @@ export default function ImportFromTextModal({ ai }) {
 
     // Privacy policy container that will be updated reactively
     const privacyContainer = div();
-    
+
     // Privacy policy link
-    const privacyLink = a({ 
-        href: "#", 
+    const privacyLink = a({
+        href: "#",
         onclick: (e) => { e.preventDefault(); showPrivacyPolicy.val = true; },
         style: "font-size: 0.8125rem; color: #007bff; text-decoration: underline; cursor: pointer;"
     }, "view privacy policy");
-    
+
     // Privacy policy text
     const privacyText = p({ style: "margin: 0; font-size: 0.8125rem; color: #6c757d;" },
         "This feature uses Google's Gemini AI model, which is free to use. To keep this service free, your input is shared with Google to help improve their AI models."
     );
-    
+
     // Reactively update privacy container based on state
     van.derive(() => {
         privacyContainer.replaceChildren();
@@ -149,16 +168,16 @@ export default function ImportFromTextModal({ ai }) {
         },
         footer: [
             VStack(
-                { spacing: 10, alignment: "center" },
-                Space(),
-                messageDisplay,
-                Space()
+                { spacing: 10, alignment: "center", style: "flex-grow: 1;" },
+                () =>
+                    progressValue.val > 0
+                        ? Progress({ value: progressValue, max: 100, style: "width: 100%;" })
+                        : []
             ),
-            Space(),
             importButton,
         ]
     },
-        div({ class: "modal-instructions", style: "margin-bottom: 1rem; padding: 0.75rem; background-color: #f8f9fa; border-radius: 4px; font-size: 0.875rem; line-height: 1.5;"}, 
+        div({ class: "modal-instructions", style: "margin-bottom: 1rem; padding: 0.75rem; background-color: #f8f9fa; border-radius: 4px; font-size: 0.875rem; line-height: 1.5;" },
             p({ style: "margin: 0 0 0.5rem 0; font-weight: 500;" },
                 "How to use:"
             ),
@@ -166,7 +185,7 @@ export default function ImportFromTextModal({ ai }) {
                 "Paste your family group record notes in the text area below. The AI will automatically extract names, dates, relationships, and events to populate your Family Group Record. Your notes can be in any format or order."
             ),
             privacyContainer
-        ), 
+        ),
         textinput
     );
 
