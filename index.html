@@ -122,7 +122,7 @@
                 </div>
 
                 <div class="header-text">
-                    <h1>Family Group Record Builder</h1>
+                    <h1 id="hero-title">Family Group Record Builder</h1>
                     <p class="subtitle">Create professional Family Group Records with ease!</p>
                 </div>
 
@@ -283,6 +283,28 @@
 
         <!-- Main Application -->
         <script type="module" src="/main.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var h1 = document.getElementById('hero-title');
+                if (!h1) return;
+                var text = h1.textContent;
+                var colors = [
+                    '#ffdcc0', /* light orange */
+                    '#c8e0f5', /* light blue */
+                    '#d8f0d8', /* light green */
+                    '#fff0b0', /* light yellow */
+                    '#ffd4e0'  /* light pink */
+                ];
+                h1.innerHTML = '';
+                for (var i = 0; i < text.length; i++) {
+                    var span = document.createElement('span');
+                    span.className = 'hero-title-letter';
+                    span.textContent = text[i];
+                    span.style.color = colors[Math.floor(Math.random() * colors.length)];
+                    h1.appendChild(span);
+                }
+            });
+        </script>
 </body>
 
 </html>
