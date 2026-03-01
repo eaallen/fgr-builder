@@ -6,19 +6,20 @@
 }
 
 :root {
-    /* Primary theme (indigo/violet) */
-    --color-primary: #4f46e5;
-    --color-primary-hover: #4338ca;
-    --color-primary-dark: #3730a3;
-    --color-primary-darkest: #1e1b4b;
-    --color-primary-rgb: 79, 70, 229;
-    --color-violet: #7c3aed;
-    --color-violet-light: #8b5cf6;
-    --color-guest-hover: rgb(90, 85, 196);
+    /* Primary theme (bold green for buttons & CTAs) */
+    --color-primary: #059669;
+    --color-primary-hover: #047857;
+    --color-primary-dark: #065f46;
+    --color-primary-darkest: #064e3b;
+    --color-primary-rgb: 5, 150, 105;
+    /* Accent (teal) for headers and secondary emphasis — no purple */
+    --color-accent: #0d9488;
+    --color-accent-light: #14b8a6;
+    --color-guest-hover: #047857;
 
-    /* Background gradients */
-    --gradient-body: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --gradient-header: linear-gradient(135deg, var(--color-primary) 0%, var(--color-violet) 100%);
+    /* Background: fresh light tint, no purple gradient */
+    --gradient-body: linear-gradient(180deg, #ecfdf5 0%, #f0fdf4 50%, #fafaf9 100%);
+    --gradient-header: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
 
     /* Text */
     --color-text: #333;
@@ -30,7 +31,7 @@
 
     /* Borders & surfaces */
     --color-border: #e2e8f0;
-    --color-border-focus: #c7d2fe;
+    --color-border-focus: #a7f3d0;
     --color-bg-subtle: #f8fafc;
     --color-bg-subtle-hover: #f1f5f9;
 
@@ -418,7 +419,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    font-weight: 500;
+    font-weight: 600;
     transition: all var(--transition-fast);
     width: 100%;
 }
@@ -876,7 +877,7 @@ body {
 }
 
 .source-link:visited {
-    color: var(--color-violet);
+    color: var(--color-accent);
 }
 
 .source-link:active {
@@ -1044,7 +1045,7 @@ body {
 }
 
 .add-spouse-btn {
-    background: var(--color-violet-light);
+    background: var(--color-accent-light);
     color: white;
     border: none;
     padding: 8px 12px;
@@ -1055,7 +1056,7 @@ body {
 }
 
 .add-spouse-btn:hover {
-    background: var(--color-violet);
+    background: var(--color-accent);
 }
 
 .add-child-btn {
@@ -1156,6 +1157,7 @@ textarea::placeholder {
 .btn-primary {
     background: var(--color-primary);
     color: white;
+    font-weight: 600;
 }
 
 .btn-primary:hover {
@@ -1282,7 +1284,7 @@ textarea::placeholder {
 }
 
 .modal-header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-violet) 100%);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
     color: white;
     padding: 20px 30px;
     border-radius: 12px 12px 0 0;
