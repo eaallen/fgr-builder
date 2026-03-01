@@ -6,20 +6,20 @@
 }
 
 :root {
-    /* Primary theme (bold green for buttons & CTAs) */
-    --color-primary: #059669;
-    --color-primary-hover: #047857;
-    --color-primary-dark: #065f46;
-    --color-primary-darkest: #064e3b;
-    --color-primary-rgb: 5, 150, 105;
-    /* Accent (teal) for headers and secondary emphasis — no purple */
-    --color-accent: #0d9488;
-    --color-accent-light: #14b8a6;
-    --color-guest-hover: #047857;
+    /* Primary theme (lighter green for buttons & CTAs) */
+    --color-primary: #10b981;
+    --color-primary-hover: #059669;
+    --color-primary-dark: #047857;
+    --color-primary-darkest: #065f46;
+    --color-primary-rgb: 16, 185, 129;
+    /* Accent (lighter teal) for headers and secondary emphasis */
+    --color-accent: #14b8a6;
+    --color-accent-light: #2dd4bf;
+    --color-guest-hover: #059669;
 
     /* Background: fresh light tint, no purple gradient */
     --gradient-body: linear-gradient(180deg, #ecfdf5 0%, #f0fdf4 50%, #fafaf9 100%);
-    --gradient-header: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+    --gradient-header: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
 
     /* Text */
     --color-text: #333;
@@ -31,7 +31,7 @@
 
     /* Borders & surfaces */
     --color-border: #e2e8f0;
-    --color-border-focus: #a7f3d0;
+    --color-border-focus: #bbf7d0;
     --color-bg-subtle: #f8fafc;
     --color-bg-subtle-hover: #f1f5f9;
 
