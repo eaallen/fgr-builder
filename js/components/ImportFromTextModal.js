@@ -14,6 +14,7 @@ import Space from "./Space.js";
 import keepScreenAlive from "../utils/keepscreenalive.js";
 import Progress from "./Progress.js";
 import HStack from "./HStack.js";
+import TurndownService from "turndown";
 
 /**
  * Import from Text Modal Component
@@ -61,7 +62,8 @@ export default function ImportFromTextModal({ ai }) {
 
 
     const handleImport = async () => {
-        const userInput = userInputValue.trim();
+        const turndown = new TurndownService();
+        const userInput = turndown.turndown(userInputValue.trim());
 
         console.log("userInput---------->", userInput.length);
 
