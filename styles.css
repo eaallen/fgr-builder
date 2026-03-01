@@ -6,20 +6,21 @@
 }
 
 :root {
-    /* Primary theme (lighter green for buttons & CTAs) */
-    --color-primary: #10b981;
-    --color-primary-hover: #059669;
-    --color-primary-dark: #047857;
-    --color-primary-darkest: #065f46;
-    --color-primary-rgb: 16, 185, 129;
-    /* Accent (lighter teal) for headers and secondary emphasis */
-    --color-accent: #14b8a6;
-    --color-accent-light: #2dd4bf;
-    --color-guest-hover: #059669;
+    /* Business card palette: vibrant spring green, white, dark text */
+    --color-primary: #5eb85c;
+    --color-primary-hover: #69d24c;
+    --color-primary-dark: #4a9c48;
+    --color-primary-darkest: #3d8b3a;
+    --color-primary-rgb: 94, 184, 92;
+    /* Accent: light green/teal for emphasis (like textbook title on card) */
+    --color-accent: #0d9488;
+    --color-accent-light: #14b8a6;
+    --color-guest-hover: #4a9c48;
 
-    /* Background: fresh light tint, no purple gradient */
-    --gradient-body: linear-gradient(180deg, #ecfdf5 0%, #f0fdf4 50%, #fafaf9 100%);
-    --gradient-header: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+    /* Body: clean white with subtle tint (card has white + green) */
+    --gradient-body: #f5f9f5;
+    /* Header: solid vibrant green like the card */
+    --gradient-header: #5eb85c;
 
     /* Text */
     --color-text: #333;
@@ -31,7 +32,7 @@
 
     /* Borders & surfaces */
     --color-border: #e2e8f0;
-    --color-border-focus: #bbf7d0;
+    --color-border-focus: #86efac;
     --color-bg-subtle: #f8fafc;
     --color-bg-subtle-hover: #f1f5f9;
 
@@ -70,16 +71,16 @@
     --color-blue-hover: #2563eb;
     --color-red: #ef4444;
     --color-red-hover: #dc2626;
-    --color-green: #10b981;
-    --color-green-hover: #059669;
+    --color-green: #5eb85c;
+    --color-green-hover: #4a9c48;
     --color-green-bg: #f0fdf4;
     --color-green-rgb: 16, 185, 129;
     --color-orange: #f59e0b;
     --color-orange-hover: #d97706;
     --color-cyan: #06b6d4;
     --color-cyan-hover: #0891b2;
-    --color-link: #007bff;
-    --color-link-hover: #0056b3;
+    --color-link: #0284c7;
+    --color-link-hover: #0369a1;
 
     /* Disabled state */
     --color-disabled-bg: #9ca3af;
@@ -134,11 +135,11 @@ body {
     margin: 0 auto;
     background: white;
     border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-card);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
     overflow: hidden;
 }
 
-/* Header Styles */
+/* Header Styles — business card look: vibrant green, rounded type */
 .header {
     background: var(--gradient-header);
     color: white;
@@ -149,12 +150,14 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    border-bottom: 1px solid var(--color-overlay-10);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .header-content {
     padding: 40px;
     text-align: center;
+    position: relative;
+    z-index: 1;
 }
 
 .header-text {
@@ -162,16 +165,19 @@ body {
 }
 
 .header h1 {
+    font-family: 'Nunito', 'Inter', sans-serif;
     font-size: 2.5rem;
-    font-weight: 700;
+    font-weight: 800;
     margin-bottom: 10px;
     letter-spacing: -0.02em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 .subtitle {
     font-size: 1.1rem;
-    opacity: 0.9;
-    font-weight: 300;
+    opacity: 0.95;
+    font-weight: 400;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Textbook Promotion Styles */
@@ -1284,7 +1290,7 @@ textarea::placeholder {
 }
 
 .modal-header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    background: var(--gradient-header);
     color: white;
     padding: 20px 30px;
     border-radius: 12px 12px 0 0;
